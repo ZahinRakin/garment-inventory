@@ -1,0 +1,23 @@
+{
+  "name": "garment-inventory",
+  "version": "1.0.0",
+  "description": "api to manage the stock of a garment factory",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express",
+    "backend",
+    "garment-inventory",
+    "api"
+  ],
+  "author": "Shakibul Islam Shakib, Nowshad Hossen Munna, Zahin Abdullah Rakin",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
