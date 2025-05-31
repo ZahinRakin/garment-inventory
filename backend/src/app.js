@@ -4,8 +4,11 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 
 import logger from './utils/logger.js';
-//routes
 import healthCheckRouter from './routes/healthcheck.routes.js'  //just to check if everything is working
+import dotenv from 'dotenv';
+
+
+dotenv.config({ path: '.env' });
 
 
 const app = express();
