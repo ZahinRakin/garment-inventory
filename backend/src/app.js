@@ -7,6 +7,8 @@ import logger from './utils/logger.js';
 import healthCheckRouter from './routes/healthcheck.routes.js'  //just to check if everything is working
 import dotenv from 'dotenv';
 
+import { connectDB } from './db/connect.db.js';
+import { disconnectDB } from './db/disconnect.db.js';
 
 dotenv.config({ path: '.env' });
 

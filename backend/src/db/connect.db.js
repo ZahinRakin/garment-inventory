@@ -1,10 +1,10 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  user: process.env.PGUSER || 'your_db_user',
+  user: process.env.PGUSER || 'postgres',
   host: process.env.PGHOST || 'localhost',
-  database: process.env.PGDATABASE || 'your_db_name',
-  password: process.env.PGPASSWORD || 'your_db_password',
+  database: process.env.PGDATABASE || 'garment_inventory',
+  password: process.env.PGPASSWORD,
   port: process.env.PGPORT || 5432,
 });
 
@@ -19,4 +19,4 @@ async function connectDB() {
   }
 }
 
-module.exports = { pool, connectDB };
+export { pool, connectDB }; //pool will be used in other files to run queries

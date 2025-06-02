@@ -1,4 +1,4 @@
-const { pool } = require('./connect.db');
+import { Pool } from 'pg';
 
 async function disconnectDB() {
   try {
@@ -9,4 +9,4 @@ async function disconnectDB() {
   }
 }
 
-module.exports = { disconnectDB };
+export { disconnectDB };
