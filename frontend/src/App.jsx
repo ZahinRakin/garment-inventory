@@ -1,12 +1,9 @@
 
+import React from 'react';
+import InventoryPage from './pages/InventoryPage';
 
 function App() {
-
-  return (
-    <>
-      hello world!
-    </>
-  )
+    return <InventoryPage />;
 }
 
-export default App
+export default App;
