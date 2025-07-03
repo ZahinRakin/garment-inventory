@@ -1,9 +1,9 @@
-package com.garments.inventory.application.dto;
+package com.garments.inventory.domain.entities;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class RawMaterialDTO {
+public class RawMaterial {
     private UUID id;
     private String name;
     private String unit;
@@ -12,17 +12,16 @@ public class RawMaterialDTO {
     private String category;
     private LocalDateTime createdAt;
 
-    // Constructors
-    public RawMaterialDTO() {}
+    public RawMaterial() {}
 
-    public RawMaterialDTO(UUID id, String name, String unit, int currentStock, int reorderLevel, String category, LocalDateTime createdAt) {
-        this.id = id;
+    public RawMaterial(String name, String unit, int currentStock, int reorderLevel, String category) {
+        this.id = UUID.randomUUID();
         this.name = name;
         this.unit = unit;
         this.currentStock = currentStock;
         this.reorderLevel = reorderLevel;
         this.category = category;
-        this.createdAt = createdAt;
+        this.createdAt = LocalDateTime.now();
     }
 
     // Getters and Setters
