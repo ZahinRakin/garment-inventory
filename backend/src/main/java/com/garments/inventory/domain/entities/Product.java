@@ -1,26 +1,25 @@
-package com.garments.inventory.application.dto;
+package com.garments.inventory.domain.entities;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public class ProductDTO {
+public class Product {
     private UUID id;
     private String name;
     private String category;
     private String description;
     private LocalDateTime createdAt;
-    private List<VariantDTO> variants;
+    private List<Variant> variants;
 
-    // Constructors
-    public ProductDTO() {}
+    public Product() {}
 
-    public ProductDTO(UUID id, String name, String category, String description, LocalDateTime createdAt) {
-        this.id = id;
+    public Product(String name, String category, String description) {
+        this.id = UUID.randomUUID();
         this.name = name;
         this.category = category;
         this.description = description;
-        this.createdAt = createdAt;
+        this.createdAt = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -39,6 +38,6 @@ public class ProductDTO {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public List<VariantDTO> getVariants() { return variants; }
-    public void setVariants(List<VariantDTO> variants) { this.variants = variants; }
+    public List<Variant> getVariants() { return variants; }
+    public void setVariants(List<Variant> variants) { this.variants = variants; }
 }

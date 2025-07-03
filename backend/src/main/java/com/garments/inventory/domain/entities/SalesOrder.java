@@ -1,23 +1,22 @@
-package com.garments.inventory.application.dto;
+package com.garments.inventory.domain.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-public class SalesOrderDTO {
+public class SalesOrder {
     private UUID id;
     private String customerName;
-    private String status;
+    private String status; // PENDING, DELIVERED, CANCELLED
     private LocalDate orderDate;
     private BigDecimal totalAmount;
-    private List<SalesItemDTO> salesItems;
+    private List<SalesItem> salesItems;
 
-    // Constructors
-    public SalesOrderDTO() {}
+    public SalesOrder() {}
 
-    public SalesOrderDTO(UUID id, String customerName, String status, LocalDate orderDate, BigDecimal totalAmount) {
-        this.id = id;
+    public SalesOrder(String customerName, String status, LocalDate orderDate, BigDecimal totalAmount) {
+        this.id = UUID.randomUUID();
         this.customerName = customerName;
         this.status = status;
         this.orderDate = orderDate;
@@ -40,6 +39,6 @@ public class SalesOrderDTO {
     public BigDecimal getTotalAmount() { return totalAmount; }
     public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
 
-    public List<SalesItemDTO> getSalesItems() { return salesItems; }
-    public void setSalesItems(List<SalesItemDTO> salesItems) { this.salesItems = salesItems; }
+    public List<SalesItem> getSalesItems() { return salesItems; }
+    public void setSalesItems(List<SalesItem> salesItems) { this.salesItems = salesItems; }
 }
