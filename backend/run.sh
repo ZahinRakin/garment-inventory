@@ -1,7 +1,29 @@
-cd ./src/controllers
+#!/bin/bash
 
-touch auth.controllers.js production_orders.controllers.js products.controllers.js purchases.controllers.js raw_materials.controllers.js reports.controllers.js sales_orders.controllers.js suppliers.controllers.js stocks.controllers.js variants.controllers.js
+mkdir -p src/main/java/com/garments/inventory/{config,domain,application/dto,infrastructure/{controller,entity,repository}}
+mkdir -p src/main/resources
 
-cd ../models
-touch auth.models.sql production_orders.models.sql products.models.sql purchases.models.sql raw_materials.models.sql reports.models.sql sales_orders.models.sql suppliers.models.sql stocks.models.sql variants.models.sql
+# Create main application file
+touch src/main/java/com/garments/inventory/GarmentsInventoryApp.java
 
+# Domain classes
+touch src/main/java/com/garments/inventory/domain/{Product.java,Variant.java,RawMaterial.java,Supplier.java,Purchase.java,PurchaseItem.java,ProductionOrder.java,SalesOrder.java,SalesItem.java}
+
+# Application services and DTOs
+touch src/main/java/com/garments/inventory/application/{ProductService.java,VariantService.java,RawMaterialService.java,SupplierService.java,PurchaseService.java,ProductionService.java,SalesService.java}
+touch src/main/java/com/garments/inventory/application/dto/{ProductDTO.java,VariantDTO.java,SalesOrderDTO.java,RawMaterialDTO.java}
+
+# Controllers
+touch src/main/java/com/garments/inventory/infrastructure/controller/{AuthController.java,ProductController.java,RawMaterialController.java,SupplierController.java,PurchaseController.java,ProductionController.java,SalesController.java,ReportController.java}
+
+# Entity classes
+touch src/main/java/com/garments/inventory/infrastructure/entity/{ProductEntity.java,VariantEntity.java,RawMaterialEntity.java,SupplierEntity.java,PurchaseEntity.java,PurchaseItemEntity.java,ProductionOrderEntity.java,SalesOrderEntity.java,SalesItemEntity.java}
+
+# Repositories
+touch src/main/java/com/garments/inventory/infrastructure/repository/{ProductRepository.java,VariantRepository.java,RawMaterialRepository.java,SupplierRepository.java,PurchaseRepository.java,PurchaseItemRepository.java,ProductionOrderRepository.java,SalesOrderRepository.java,SalesItemRepository.java}
+
+# Config classes
+touch src/main/java/com/garments/inventory/config/{SecurityConfig.java,BeanConfig.java}
+
+# Resource files
+touch src/main/resources/{application.yml,schema.sql}
