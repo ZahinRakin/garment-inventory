@@ -1,66 +1,66 @@
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/PurchaseItem.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/config/JwtAuthenticationFilter.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/repository/PurchaseItemRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/repository/ProductionOrderRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/SupplierService.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/VariantService.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/repositories/RawMaterialRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/repository/VariantRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/GarmentsInventoryApp.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/controller/SupplierController.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/repository/SupplierRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/RawMaterial.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/entity/ProductionOrderEntity.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/ProductService.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/repositories/SalesOrderRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/controller/SalesController.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/repositories/PurchaseRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/repository/SalesOrderRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/entity/VariantEntity.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/entity/PurchaseItemEntity.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/repository/ProductRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/dto/AuthResponseDTO.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/SalesItem.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/entity/PurchaseEntity.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/repository/SalesItemRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/repositories/UserRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/dto/AuthRequestDTO.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/repositories/ProductionOrderRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/SalesOrder.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/User.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/ProductionService.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/repository/RawMaterialRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/dto/VariantDTO.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/config/BeanConfig.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/RawMaterialService.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/PurchaseService.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/Variant.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/controller/RawMaterialController.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/controller/ReportController.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/entity/RawMaterialEntity.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/dto/RawMaterialDTO.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/dto/SalesOrderDTO.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/repositories/ProductRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/SalesOrderService.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/Purchase.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/ProductionOrder.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/services/JwtUtil.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/controller/AuthController.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/dto/SalesItemDTO.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/Supplier.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/repositories/VariantRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/entity/ProductEntity.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/services/AuthService.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/entity/SupplierEntity.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/controller/ProductController.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/entity/SalesItemEntity.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/repository/PurchaseRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/dto/ProductDTO.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/controller/ProductionController.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/entities/Product.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/controller/PurchaseController.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/UserService.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/infrastructure/entity/SalesOrderEntity.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/application/dto/UserRegistrationDTO.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/domain/repositories/SupplierRepository.java
-/home/shakib/Desktop/garment-inventory/garment-inventory/backend/src/main/java/com/garments/inventory/config/SecurityConfig.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\repository\ProductionOrderRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\controller\SalesController.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\PurchaseItem.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\User.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\entity\RawMaterialEntity.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\SalesOrderService.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\services\AuthService.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\dto\ProductDTO.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\PurchaseService.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\GarmentsInventoryApp.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\entity\SupplierEntity.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\dto\SalesItemDTO.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\controller\RawMaterialController.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\entity\SalesItemEntity.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\RawMaterial.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\entity\SalesOrderEntity.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\dto\SalesOrderDTO.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\config\SecurityConfig.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\Supplier.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\repository\VariantRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\dto\RawMaterialDTO.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\ProductService.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\Purchase.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\controller\ReportController.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\repositories\SalesOrderRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\repositories\RawMaterialRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\entity\PurchaseEntity.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\repositories\ProductRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\repository\SalesOrderRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\ProductionOrder.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\controller\ProductController.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\repository\PurchaseItemRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\SupplierService.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\repository\SupplierRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\entity\PurchaseItemEntity.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\controller\SupplierController.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\services\JwtUtil.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\controller\AuthController.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\Product.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\VariantService.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\repositories\SupplierRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\entity\VariantEntity.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\repositories\PurchaseRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\entity\ProductionOrderEntity.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\repository\RawMaterialRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\config\BeanConfig.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\controller\PurchaseController.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\repository\SalesItemRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\repositories\UserRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\dto\VariantDTO.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\repository\PurchaseRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\repositories\VariantRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\SalesOrder.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\UserService.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\Variant.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\repository\ProductRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\config\JwtAuthenticationFilter.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\dto\AuthRequestDTO.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\entity\ProductEntity.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\repositories\ProductionOrderRepository.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\infrastructure\controller\ProductionController.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\ProductionService.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\dto\AuthResponseDTO.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\dto\UserRegistrationDTO.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\domain\entities\SalesItem.java
+D:\Documents\6th semester\SE-606 (Fuad vai) [ SOFT ANALYSIS ]\garment-inventory\backend\src\main\java\com\garments\inventory\application\RawMaterialService.java

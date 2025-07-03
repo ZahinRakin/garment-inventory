@@ -1,3 +1,5 @@
+package com.garments.inventory.domain.entities;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 

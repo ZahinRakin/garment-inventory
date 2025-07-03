@@ -1,0 +1,44 @@
+Here's a highly condensed version preserving all key information:
+
+**Garment Inventory System - Core Summary**
+
+**Modules:**
+1. **Auth**: JWT, Roles (ADMIN, STORE_MANAGER, PRODUCTION_OFFICER, SALES_OFFICER)
+2. **Products**: Variants (size/color/fabric), SKUs, stock tracking
+3. **Raw Materials**: Units (kg/meters), reorder alerts, categories
+4. **Suppliers**: PO tracking, GRN, auto-stock updates
+5. **Production**: Job status (CREATED/IN_PROGRESS/COMPLETED), material consumption
+6. **Stock**: Multi-location, adjustments, alerts
+7. **Sales**: Order status (PENDING/DELIVERED), auto-deduction, invoicing
+8. **Reports**: Inventory valuation, sales/production analytics
+
+**Tech Stack:**
+- Spring Boot (Layers: domain/application/infrastructure/config)
+- PostgreSQL
+- JPA/Hibernate
+
+**Key Entities:**
+- `Product` → `Variant` (1:m)
+- `Supplier` → `Purchase` → `PurchaseItem` → `RawMaterial`
+- `ProductionOrder` → `Variant`
+- `SalesOrder` → `SalesItem` → `Variant`
+
+**DB Tables (Critical Fields Only):**
+1. `products`: id, name, category
+2. `variants`: id, product_id(FK), size/color/fabric, quantity, SKU
+3. `raw_materials`: id, name, unit, current_stock, reorder_level
+4. `suppliers`: id, name, contact
+5. `purchases`: id, supplier_id(FK), status, total_amount
+6. `purchase_items`: purchase_id(FK), material_id(FK), qty, unit_price
+7. `production_orders`: variant_id(FK), qty, status
+8. `sales_orders`: id, customer_name, status, total
+9. `sales_items`: sales_order_id(FK), variant_id(FK), qty
+
+**Relationships:**
+- Variants → Products
+- PurchaseItems → Purchases + RawMaterials
+- ProductionOrders → Variants
+- SalesItems → SalesOrders + Variants
+
+**Flow:**
+Purchase → ↑Raw Stock → Production consumes → ↑Product Stock → Sales consumes → Reports track all
