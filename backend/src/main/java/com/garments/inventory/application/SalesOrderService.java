@@ -1,4 +1,4 @@
-package com.garments.inventory.application.services;
+package com.garments.inventory.application;
 
 import com.garments.inventory.application.dto.SalesOrderDTO;
 import com.garments.inventory.application.dto.SalesItemDTO;

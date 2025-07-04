@@ -1,5 +1,5 @@
 
-package com.garments.inventory.application.services;
+package com.garments.inventory.application;
 
 import com.garments.inventory.application.dto.ProductDTO;
 import com.garments.inventory.application.dto.VariantDTO;
