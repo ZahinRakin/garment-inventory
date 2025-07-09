@@ -1,16 +1,20 @@
 package com.garments.inventory.domain.entities;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
 public class Product {
+    @Id
     private UUID id;
     private String name;
     private String category;
     private String description;
     private LocalDateTime createdAt;
-    private List<Variant> variants;
+    // For now, omit @OneToMany to avoid JPA mapping issues until Variant is also annotated
+    private transient List<Variant> variants;
 
     public Product() {}
 

@@ -1,9 +1,12 @@
 package com.garments.inventory.domain.entities;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
 public class Supplier {
+    @Id
     private UUID id;
     private String name;
     private String email;

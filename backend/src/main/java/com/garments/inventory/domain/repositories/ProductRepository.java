@@ -1,14 +1,11 @@
 package com.garments.inventory.domain.repositories;
 
 import com.garments.inventory.domain.entities.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-public interface ProductRepository {
-    Product save(Product product);
-    Optional<Product> findById(UUID id);
-    List<Product> findAll();
+public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findByCategory(String category);
-    void deleteById(UUID id);
+    // You can add custom query methods here if needed
 }

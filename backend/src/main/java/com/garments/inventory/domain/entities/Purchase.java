@@ -1,19 +1,22 @@
 package com.garments.inventory.domain.entities;
 
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
 public class Purchase {
+    @Id
     private UUID id;
     private UUID supplierId;
     private LocalDate orderDate;
     private String status; // CREATED, RECEIVED, CANCELLED
     private BigDecimal totalAmount;
     private LocalDateTime createdAt;
-    private List<PurchaseItem> purchaseItems;
+    private transient List<PurchaseItem> purchaseItems;
 
     public Purchase() {}
 

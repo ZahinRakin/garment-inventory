@@ -1,15 +1,9 @@
 package com.garments.inventory.domain.repositories;
 
 import com.garments.inventory.domain.entities.Purchase;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
-public interface PurchaseRepository {
-    Purchase save(Purchase purchase);
-    Optional<Purchase> findById(UUID id);
-    List<Purchase> findAll();
-    List<Purchase> findBySupplierId(UUID supplierId);
-    List<Purchase> findByStatus(String status);
-    void deleteById(UUID id);
+public interface PurchaseRepository extends JpaRepository<Purchase, UUID> {
+    // You can add custom query methods here if needed
 }

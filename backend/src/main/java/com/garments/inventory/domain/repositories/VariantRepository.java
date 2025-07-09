@@ -1,14 +1,11 @@
 package com.garments.inventory.domain.repositories;
 
 import com.garments.inventory.domain.entities.Variant;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-public interface VariantRepository {
-    Variant save(Variant variant);
-    Optional<Variant> findById(UUID id);
-    List<Variant> findAll();
+public interface VariantRepository extends JpaRepository<Variant, UUID> {
     List<Variant> findByProductId(UUID productId);
-    void deleteById(UUID id);
+    // You can add custom query methods here if needed
 }
