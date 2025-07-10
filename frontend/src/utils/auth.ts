@@ -1,0 +1,61 @@
+import type { AuthState, User } from '../types/index';
+
+const AUTH_STORAGE_KEY = 'garment_inventory_auth';
+
+export const getStoredAuth = (): AuthState => {
+  try {
+    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (error) {
+    console.error('Error parsing stored auth:', error);
+  }
+  
+  return {
+    user: null,
+    token: null,
+    isAuthenticated: false
+  };
+};
+
+export const storeAuth = (auth: AuthState): void => {
+  try {
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
+  } catch (error) {
+    console.error('Error storing auth:', error);
+  }
+};
+
+export const clearAuth = (): void => {
+  try {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+  } catch (error) {
+    console.error('Error clearing auth:', error);
+  }
+};
+
+export const hasPermission = (user: User | null, requiredRoles: string[]): boolean => {
+  if (!user) return false;
+  return requiredRoles.includes(user.role);
+};
+
+export const formatUserName = (user: User | null): string => {
+  if (!user) return '';
+  return `${user.firstName} ${user.lastName}`;
+};
+
+export const getRoleDisplayName = (role: string): string => {
+  switch (role) {
+    case 'ADMIN':
+      return 'Administrator';
+    case 'STORE_MANAGER':
+      return 'Store Manager';
+    case 'PRODUCTION_OFFICER':
+      return 'Production Officer';
+    case 'SALES_OFFICER':
+      return 'Sales Officer';
+    default:
+      return role;
+  }
+};
