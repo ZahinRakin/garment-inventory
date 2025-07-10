@@ -7,24 +7,41 @@ public class RawMaterial {
     private UUID id;
     private String name;
     private String unit;
-    private Integer currentStock;
-    private Integer reorderLevel;
+    private int currentStock;
+    private int reorderLevel;
     private String category;
     private LocalDateTime createdAt;
 
     public RawMaterial() {
-        this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
-        this.currentStock = 0;
-        this.reorderLevel = 0;
     }
 
-    public RawMaterial(String name, String unit, String category, Integer reorderLevel) {
+    public RawMaterial(String name, String unit, int currentStock, int reorderLevel, String category) {
         this();
         this.name = name;
         this.unit = unit;
-        this.category = category;
+        this.currentStock = currentStock;
         this.reorderLevel = reorderLevel;
+        this.category = category;
+    }
+
+    // Business logic methods
+    public void consumeStock(int amount) {
+        if (amount > currentStock) {
+            throw new IllegalArgumentException("Cannot consume more stock than available");
+        }
+        this.currentStock -= amount;
+    }
+
+    public void addStock(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Cannot add negative stock");
+        }
+        this.currentStock += amount;
+    }
+
+    public boolean needsReorder() {
+        return currentStock <= reorderLevel;
     }
 
     // Getters and Setters
@@ -37,31 +54,15 @@ public class RawMaterial {
     public String getUnit() { return unit; }
     public void setUnit(String unit) { this.unit = unit; }
 
-    public Integer getCurrentStock() { return currentStock; }
-    public void setCurrentStock(Integer currentStock) { this.currentStock = currentStock; }
+    public int getCurrentStock() { return currentStock; }
+    public void setCurrentStock(int currentStock) { this.currentStock = currentStock; }
 
-    public Integer getReorderLevel() { return reorderLevel; }
-    public void setReorderLevel(Integer reorderLevel) { this.reorderLevel = reorderLevel; }
+    public int getReorderLevel() { return reorderLevel; }
+    public void setReorderLevel(int reorderLevel) { this.reorderLevel = reorderLevel; }
 
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public void addStock(int quantity) {
-        this.currentStock += quantity;
-    }
-
-    public boolean consumeStock(int quantity) {
-        if (this.currentStock >= quantity) {
-            this.currentStock -= quantity;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isReorderNeeded() {
-        return this.currentStock <= this.reorderLevel;
-    }
 }

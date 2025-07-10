@@ -5,9 +5,10 @@ import type { User } from '../../types';
 
 interface LoginFormProps {
   onLogin: (user: User, token: string) => void;
+  onRegister?: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -104,10 +105,26 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           </div>
         </form>
         
-        <div className="text-center">
+        <div className="text-center space-y-3">
           <p className="text-xs text-gray-400">
             Demo credentials: admin@example.com / password
           </p>
+          
+          <div className="flex items-center justify-center">
+            <div className="border-t border-gray-600 flex-grow"></div>
+            <span className="px-3 text-xs text-gray-400">or</span>
+            <div className="border-t border-gray-600 flex-grow"></div>
+          </div>
+          
+          <div>
+            <button
+              type="button"
+              onClick={onRegister}
+              className="w-full flex justify-center py-3 px-4 border border-emerald-500 text-emerald-400 bg-transparent hover:bg-emerald-500 hover:text-white rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+            >
+              Create New Account
+            </button>
+          </div>
         </div>
       </div>
     </div>
