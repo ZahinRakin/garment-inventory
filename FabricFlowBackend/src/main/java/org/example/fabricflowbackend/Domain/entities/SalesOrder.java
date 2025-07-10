@@ -3,7 +3,6 @@ package org.example.fabricflowbackend.Domain.entities;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,21 +12,43 @@ public class SalesOrder {
     private String status; // PENDING, DELIVERED, CANCELLED
     private LocalDate orderDate;
     private BigDecimal totalAmount;
-    private LocalDateTime createdAt;
     private List<SalesItem> items;
+    private LocalDateTime createdAt;
 
     public SalesOrder() {
-        this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
-        this.orderDate = LocalDate.now();
         this.status = "PENDING";
-        this.totalAmount = BigDecimal.ZERO;
-        this.items = new ArrayList<>();
     }
 
-    public SalesOrder(String customerName) {
+    public SalesOrder(String customerName, LocalDate orderDate) {
         this();
         this.customerName = customerName;
+        this.orderDate = orderDate;
+    }
+
+    // Business logic methods
+    public void markAsDelivered() {
+        this.status = "DELIVERED";
+    }
+
+    public void markAsCancelled() {
+        this.status = "CANCELLED";
+    }
+
+    public void calculateTotalAmount() {
+        if (items != null && !items.isEmpty()) {
+            this.totalAmount = items.stream()
+                    .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+    }
+
+    public boolean isDelivered() {
+        return "DELIVERED".equals(status);
+    }
+
+    public boolean isPending() {
+        return "PENDING".equals(status);
     }
 
     // Getters and Setters
@@ -46,21 +67,9 @@ public class SalesOrder {
     public BigDecimal getTotalAmount() { return totalAmount; }
     public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
     public List<SalesItem> getItems() { return items; }
     public void setItems(List<SalesItem> items) { this.items = items; }
 
-    public void addItem(SalesItem item) {
-        this.items.add(item);
-        item.setSalesOrderId(this.id);
-        calculateTotalAmount();
-    }
-
-    private void calculateTotalAmount() {
-        this.totalAmount = items.stream()
-                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

@@ -1,3 +1,5 @@
+package org.example.fabricflowbackend.Domain.entities;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -7,23 +9,41 @@ public class Variant {
     private String size;
     private String color;
     private String fabric;
-    private Integer quantity;
+    private int quantity;
     private String sku;
     private LocalDateTime createdAt;
 
     public Variant() {
-        this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
-        this.quantity = 0;
     }
 
-    public Variant(UUID productId, String size, String color, String fabric, String sku) {
+    public Variant(UUID productId, String size, String color, String fabric, int quantity, String sku) {
         this();
         this.productId = productId;
         this.size = size;
         this.color = color;
         this.fabric = fabric;
+        this.quantity = quantity;
         this.sku = sku;
+    }
+
+    // Business logic methods
+    public void reduceStock(int amount) {
+        if (amount > quantity) {
+            throw new IllegalArgumentException("Cannot reduce stock by more than available quantity");
+        }
+        this.quantity -= amount;
+    }
+
+    public void increaseStock(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Cannot increase stock by negative amount");
+        }
+        this.quantity += amount;
+    }
+
+    public boolean isLowStock(int threshold) {
+        return quantity <= threshold;
     }
 
     // Getters and Setters
@@ -42,20 +62,12 @@ public class Variant {
     public String getFabric() { return fabric; }
     public void setFabric(String fabric) { this.fabric = fabric; }
 
-    public Integer getQuantity() { return quantity; }
-    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
 
     public String getSku() { return sku; }
     public void setSku(String sku) { this.sku = sku; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public void updateStock(int quantity) {
-        this.quantity += quantity;
-    }
-
-    public boolean canFulfillOrder(int requestedQuantity) {
-        return this.quantity >= requestedQuantity;
-    }
 }

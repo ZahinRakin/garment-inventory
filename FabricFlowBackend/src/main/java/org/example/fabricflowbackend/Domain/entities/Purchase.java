@@ -3,7 +3,6 @@ package org.example.fabricflowbackend.Domain.entities;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,21 +12,39 @@ public class Purchase {
     private LocalDate orderDate;
     private String status; // CREATED, RECEIVED, CANCELLED
     private BigDecimal totalAmount;
-    private LocalDateTime createdAt;
     private List<PurchaseItem> items;
+    private LocalDateTime createdAt;
 
     public Purchase() {
-        this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
-        this.orderDate = LocalDate.now();
         this.status = "CREATED";
-        this.totalAmount = BigDecimal.ZERO;
-        this.items = new ArrayList<>();
     }
 
-    public Purchase(UUID supplierId) {
+    public Purchase(UUID supplierId, LocalDate orderDate) {
         this();
         this.supplierId = supplierId;
+        this.orderDate = orderDate;
+    }
+
+    // Business logic methods
+    public void markAsReceived() {
+        this.status = "RECEIVED";
+    }
+
+    public void markAsCancelled() {
+        this.status = "CANCELLED";
+    }
+
+    public void calculateTotalAmount() {
+        if (items != null && !items.isEmpty()) {
+            this.totalAmount = items.stream()
+                    .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+    }
+
+    public boolean isCompleted() {
+        return "RECEIVED".equals(status);
     }
 
     // Getters and Setters
@@ -46,21 +63,9 @@ public class Purchase {
     public BigDecimal getTotalAmount() { return totalAmount; }
     public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
     public List<PurchaseItem> getItems() { return items; }
     public void setItems(List<PurchaseItem> items) { this.items = items; }
 
-    public void addItem(PurchaseItem item) {
-        this.items.add(item);
-        item.setPurchaseId(this.id);
-        calculateTotalAmount();
-    }
-
-    private void calculateTotalAmount() {
-        this.totalAmount = items.stream()
-                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

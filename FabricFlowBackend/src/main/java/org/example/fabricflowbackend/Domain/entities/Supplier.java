@@ -12,7 +12,6 @@ public class Supplier {
     private LocalDateTime createdAt;
 
     public Supplier() {
-        this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
     }
 

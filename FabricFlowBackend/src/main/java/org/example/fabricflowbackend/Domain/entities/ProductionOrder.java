@@ -7,22 +7,40 @@ import java.util.UUID;
 public class ProductionOrder {
     private UUID id;
     private UUID variantId;
-    private Integer quantity;
+    private int quantity;
     private String status; // CREATED, IN_PROGRESS, COMPLETED
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalDateTime createdAt;
 
     public ProductionOrder() {
-        this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
         this.status = "CREATED";
     }
 
-    public ProductionOrder(UUID variantId, Integer quantity) {
+    public ProductionOrder(UUID variantId, int quantity) {
         this();
         this.variantId = variantId;
         this.quantity = quantity;
+    }
+
+    // Business logic methods
+    public void startProduction() {
+        this.status = "IN_PROGRESS";
+        this.startDate = LocalDate.now();
+    }
+
+    public void completeProduction() {
+        this.status = "COMPLETED";
+        this.endDate = LocalDate.now();
+    }
+
+    public boolean isCompleted() {
+        return "COMPLETED".equals(status);
+    }
+
+    public boolean isInProgress() {
+        return "IN_PROGRESS".equals(status);
     }
 
     // Getters and Setters
@@ -32,8 +50,8 @@ public class ProductionOrder {
     public UUID getVariantId() { return variantId; }
     public void setVariantId(UUID variantId) { this.variantId = variantId; }
 
-    public Integer getQuantity() { return quantity; }
-    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
@@ -46,14 +64,4 @@ public class ProductionOrder {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public void startProduction() {
-        this.status = "IN_PROGRESS";
-        this.startDate = LocalDate.now();
-    }
-
-    public void completeProduction() {
-        this.status = "COMPLETED";
-        this.endDate = LocalDate.now();
-    }
 }
