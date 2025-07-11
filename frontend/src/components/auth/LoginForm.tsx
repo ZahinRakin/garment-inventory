@@ -125,17 +125,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
               Create New Account
             </button>
           </div>
-          
-          <p className="text-xs text-gray-400">
-            Don't have an account?{' '}
-            <button
-              type="button"
-              onClick={onRegister}
-              className="text-emerald-400 hover:text-emerald-300 underline"
-            >
-              Sign up here
-            </button>
-          </p>
         </div>
       </div>
     </div>
