@@ -1,19 +1,9 @@
 import React from 'react';
-import { Card } from '../common/Card';
+// import { Card } from '../common/Card';
 import { DashboardStats } from './DashboardStats';
 import { RecentActivity } from './RecentActivity';
-
-// Placeholder widgets for missing KPIs
-const PurchaseSummary = () => (
-  <Card title="Purchase Summary by Supplier">
-    <div className="text-gray-600">[Purchase summary widget here]</div>
-  </Card>
-);
-const Alerts = () => (
-  <Card title="Alerts">
-    <div className="text-red-600">[Low stock, overdue POs, etc.]</div>
-  </Card>
-);
+import { PurchaseSummary } from './PurchaseSummary';
+import { Alerts } from './Alerts';
 
 export const DashboardAdmin: React.FC = () => {
   return (

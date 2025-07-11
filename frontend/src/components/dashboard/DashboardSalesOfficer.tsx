@@ -1,26 +1,8 @@
 import React from 'react';
-import { Card } from '../common/Card';
-
-const PendingDeliveredOrders = () => (
-  <Card title="Pending vs Delivered Orders">
-    <div className="text-gray-600">[Pending vs delivered orders widget here]</div>
-  </Card>
-);
-const TopSellingProducts = () => (
-  <Card title="Top-Selling Products">
-    <div className="text-gray-600">[Top-selling products widget here]</div>
-  </Card>
-);
-const RevenueSummary = () => (
-  <Card title="Revenue Summary">
-    <div className="text-gray-600">[Revenue summary widget here]</div>
-  </Card>
-);
-const CustomerOrders = () => (
-  <Card title="Customer Orders">
-    <div className="text-gray-600">[Customer orders widget here]</div>
-  </Card>
-);
+import { PendingDeliveredOrders } from './PendingDeliveredOrders';
+import { TopSellingProducts } from './TopSellingProducts';
+import { RevenueSummary } from './RevenueSummary';
+import { CustomerOrders } from './CustomerOrders';
 
 export const DashboardSalesOfficer: React.FC = () => {
   return (

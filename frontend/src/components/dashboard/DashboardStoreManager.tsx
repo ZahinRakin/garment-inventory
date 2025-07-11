@@ -1,26 +1,8 @@
 import React from 'react';
-import { Card } from '../common/Card';
-
-const RawMaterialsStock = () => (
-  <Card title="Raw Materials Stock Levels">
-    <div className="text-gray-600">[Raw materials stock widget here]</div>
-  </Card>
-);
-const ProductStock = () => (
-  <Card title="Product Stock Levels">
-    <div className="text-gray-600">[Product stock widget here]</div>
-  </Card>
-);
-const LowStockAlerts = () => (
-  <Card title="Low Stock Alerts">
-    <div className="text-red-600">[Low stock alerts widget here]</div>
-  </Card>
-);
-const RecentPurchases = () => (
-  <Card title="Recent Purchases">
-    <div className="text-gray-600">[Recent purchases widget here]</div>
-  </Card>
-);
+import { RawMaterialsStock } from './RawMaterialsStock';
+import { ProductStock } from './ProductStock';
+import { LowStockAlerts } from './LowStockAlerts';
+import { RecentPurchases } from './RecentPurchases';
 
 export const DashboardStoreManager: React.FC = () => {
   return (

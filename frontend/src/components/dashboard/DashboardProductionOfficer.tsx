@@ -1,26 +1,8 @@
 import React from 'react';
-import { Card } from '../common/Card';
-
-const ActiveProductionJobs = () => (
-  <Card title="Active Production Jobs">
-    <div className="text-gray-600">[Active production jobs widget here]</div>
-  </Card>
-);
-const RawMaterialsConsumption = () => (
-  <Card title="Raw Materials Consumption Summary">
-    <div className="text-gray-600">[Raw materials consumption widget here]</div>
-  </Card>
-);
-const FinishedGoods = () => (
-  <Card title="Finished Goods Produced">
-    <div className="text-gray-600">[Finished goods widget here]</div>
-  </Card>
-);
-const MissingMaterialsAlerts = () => (
-  <Card title="Alerts for Missing Materials">
-    <div className="text-red-600">[Missing materials alerts widget here]</div>
-  </Card>
-);
+import { ActiveProductionJobs } from './ActiveProductionJobs';
+import { RawMaterialsConsumption } from './RawMaterialsConsumption';
+import { FinishedGoods } from './FinishedGoods';
+import { MissingMaterialsAlerts } from './MissingMaterialsAlerts';
 
 export const DashboardProductionOfficer: React.FC = () => {
   return (

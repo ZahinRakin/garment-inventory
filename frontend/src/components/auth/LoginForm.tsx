@@ -25,7 +25,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
         email: email,
         firstName: 'John',
         lastName: 'Doe',
-        role: 'SALES_OFFICER' // Change this to 'ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER', or 'SALES_OFFICER'
+        role: 'STORE_MANAGER' // Change this to 'ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER', or 'SALES_OFFICER'
       };
       
       onLogin(mockUser, 'mock-jwt-token');
