@@ -25,7 +25,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
         email: email,
         firstName: 'John',
         lastName: 'Doe',
-        role: 'ADMIN' // Change this to 'ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER', or 'SALES_OFFICER'
+        role: 'SALES_OFFICER' // Change this to 'ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER', or 'SALES_OFFICER'
       };
       
       onLogin(mockUser, 'mock-jwt-token');
@@ -44,7 +44,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
           </div>
           <h2 className="text-3xl font-bold text-white">Welcome back</h2>
           <p className="mt-2 text-sm text-gray-300">
-            Sign in to your Garment Inventory System
+            Sign in to your FabricFlow account
           </p>
         </div>
         

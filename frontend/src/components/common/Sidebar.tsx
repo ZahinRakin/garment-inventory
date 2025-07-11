@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import type { User } from '../../types';
 import { hasPermission } from '../../utils/auth';
+import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarProps {
   user: User | null;
@@ -37,14 +38,15 @@ const navItems: NavItem[] = [
     icon: <Package className="w-5 h-5" />,
     label: 'Products & Variants',
     href: '/products',
-    roles: ['ADMIN'],
+    roles: ['ADMIN', 'PRODUCTION_OFFICER', 'SALES_OFFICER'],
+    // readOnly: true // For PRODUCTION_OFFICER & SALES_OFFICER
   },
   {
     icon: <Warehouse className="w-5 h-5" />,
     label: 'Raw Materials',
     href: '/raw-materials',
     roles: ['ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER'],
-    readOnly: false
+    // readOnly: true // For PRODUCTION_OFFICER
   },
   {
     icon: <Users className="w-5 h-5" />,
@@ -74,7 +76,7 @@ const navItems: NavItem[] = [
     icon: <BarChart3 className="w-5 h-5" />,
     label: 'Reports',
     href: '/reports',
-    roles: ['ADMIN'],
+    roles: ['ADMIN']
   },
   {
     icon: <BarChart3 className="w-5 h-5" />,
@@ -93,38 +95,11 @@ const navItems: NavItem[] = [
     label: 'Reports (Sales)',
     href: '/reports/sales',
     roles: ['SALES_OFFICER']
-  },
-  {
-    icon: <Package className="w-5 h-5" />,
-    label: 'Product Variants',
-    href: '/products',
-    roles: ['PRODUCTION_OFFICER'],
-    readOnly: true
-  },
-  {
-    icon: <Package className="w-5 h-5" />,
-    label: 'Products',
-    href: '/products',
-    roles: ['SALES_OFFICER'],
-    readOnly: true
-  },
-  {
-    icon: <Warehouse className="w-5 h-5" />,
-    label: 'Raw Materials',
-    href: '/raw-materials',
-    roles: ['PRODUCTION_OFFICER'],
-    readOnly: true
-  },
-  {
-    icon: <Settings className="w-5 h-5" />,
-    label: 'User Management',
-    href: '/users',
-    roles: ['ADMIN'],
-  },
+  }
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
-  const [activeItem, setActiveItem] = React.useState('/');
+  const location = useLocation();
 
   // Remove duplicates by label+href, keep the first match
   const uniqueNavItems = navItems.filter((item, idx, arr) =>
@@ -142,26 +117,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
           <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-lg flex items-center justify-center">
             <Package className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-white">GIS</span>
+          <span className="text-xl font-bold text-white">FabricFlow</span>
         </div>
       </div>
       <nav className="mt-8">
         <div className="px-4 space-y-2">
           {filteredNavItems.map((item) => (
-            <button
+            <Link
               key={item.href + item.label}
-              onClick={() => setActiveItem(item.href)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                activeItem === item.href
+              to={item.href}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors no-underline ${
+                location.pathname === item.href
                   ? 'bg-emerald-600 text-white'
                   : 'text-gray-300 hover:bg-slate-700 hover:text-white'
-              } ${item.readOnly ? 'opacity-60 cursor-not-allowed' : ''}`}
-              disabled={!!item.readOnly}
+              } ${item.readOnly ? 'opacity-60' : ''}`}  // cursor-not-allowed pointer-events-none
+              tabIndex={item.readOnly ? -1 : 0}
             >
               {item.icon}
               <span className="font-medium">{item.label}</span>
               {item.readOnly && <Lock className="w-4 h-4 ml-2 text-gray-400" />}
-            </button>
+            </Link>
           ))}
         </div>
       </nav>

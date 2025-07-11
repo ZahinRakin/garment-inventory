@@ -14,7 +14,7 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
       <div className="flex items-center justify-between px-8 py-4">
         <div className="flex items-center space-x-4">
           <h1 className="text-2xl font-bold text-gray-900">
-            Garment Inventory System
+            FabricFlow - Garment Inventory Management System
           </h1>
         </div>
         

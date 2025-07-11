@@ -7,6 +7,17 @@ import { Layout } from './components/common/Layout';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { useAuth } from './hooks/useAuth';
 import { ErrorPage } from './components/common/ErrorElement';
+import { ProductList } from './components/products/ProductList';
+import { RawMaterialList } from './components/products/RawMaterialList';
+import { SupplierList } from './components/products/SupplierList';
+import { PurchaseList } from './components/products/PurchaseList';
+import { ProductionOrderList } from './components/products/ProductionOrderList';
+import { SalesOrderList } from './components/products/SalesOrderList';
+import { StockManagementList } from './components/products/StockManagementList';
+import { ReportPage } from './components/products/ReportPage';
+import { InventoryReportPage } from './components/products/InventoryReportPage';
+import { ProductionReportPage } from './components/products/ProductionReportPage';
+import { SalesReportPage } from './components/products/SalesReportPage';
 
 // Placeholder pages for routes not yet implemented
 const Placeholder = ({ title }: { title: string }) => (
@@ -26,9 +37,7 @@ function App() {
     {
       path: '/',
       element: isAuthenticated ? (
-        <Layout user={user} onLogout={logout}>
-          <Dashboard user={user} />
-        </Layout>
+        <Layout user={user} onLogout={logout} />
       ) : (
         <Navigate to="/login" replace />
       ),
@@ -40,43 +49,47 @@ function App() {
         // --- ADMIN ---
         {
           path: 'products',
-          element: requireRole(['ADMIN', 'PRODUCTION_OFFICER', 'SALES_OFFICER'], <Placeholder title="Products & Variants" />)
+          element: requireRole(['ADMIN', 'PRODUCTION_OFFICER', 'SALES_OFFICER'], <ProductList />)
         },
         {
           path: 'raw-materials',
-          element: requireRole(['ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER'], <Placeholder title="Raw Materials" />)
+          element: requireRole(['ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER'], <RawMaterialList />)
         },
         {
           path: 'suppliers',
-          element: requireRole(['ADMIN', 'STORE_MANAGER'], <Placeholder title="Suppliers & Purchases" />)
+          element: requireRole(['ADMIN', 'STORE_MANAGER'], <SupplierList />)
+        },
+        {
+          path: 'purchases',
+          element: requireRole(['ADMIN', 'STORE_MANAGER'], <PurchaseList />)
         },
         {
           path: 'production-orders',
-          element: requireRole(['ADMIN', 'PRODUCTION_OFFICER'], <Placeholder title="Production Orders" />)
+          element: requireRole(['ADMIN', 'PRODUCTION_OFFICER'], <ProductionOrderList />)
         },
         {
           path: 'sales-orders',
-          element: requireRole(['ADMIN', 'SALES_OFFICER'], <Placeholder title="Sales Orders" />)
+          element: requireRole(['ADMIN', 'SALES_OFFICER'], <SalesOrderList />)
         },
         {
           path: 'stock',
-          element: requireRole(['ADMIN', 'STORE_MANAGER'], <Placeholder title="Stock Management" />)
+          element: requireRole(['ADMIN', 'STORE_MANAGER'], <StockManagementList />)
         },
         {
           path: 'reports',
-          element: requireRole(['ADMIN'], <Placeholder title="Reports" />)
+          element: requireRole(['ADMIN'], <ReportPage />)
         },
         {
           path: 'reports/inventory',
-          element: requireRole(['STORE_MANAGER'], <Placeholder title="Inventory Reports" />)
+          element: requireRole(['STORE_MANAGER'], <InventoryReportPage />)
         },
         {
           path: 'reports/production',
-          element: requireRole(['PRODUCTION_OFFICER'], <Placeholder title="Production Reports" />)
+          element: requireRole(['PRODUCTION_OFFICER'], <ProductionReportPage />)
         },
         {
           path: 'reports/sales',
-          element: requireRole(['SALES_OFFICER'], <Placeholder title="Sales Reports" />)
+          element: requireRole(['SALES_OFFICER'], <SalesReportPage />)
         },
         {
           path: 'users',
