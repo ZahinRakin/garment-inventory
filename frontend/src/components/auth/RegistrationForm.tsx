@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
-import { Eye, EyeOff, Package, UserPlus } from 'lucide-react';
-=======
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
 import { Button } from '../common/Button';
 import type { User } from '../../types';
 
@@ -12,32 +8,26 @@ interface RegistrationFormProps {
 }
 
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-<<<<<<< HEAD
-  const [role, setRole] = useState('USER');
-=======
   const [role, setRole] = useState<'ADMIN' | 'STORE_MANAGER' | 'PRODUCTION_OFFICER' | 'SALES_OFFICER'>('ADMIN');
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
-
-  const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
-=======
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
 
-    if (!name.trim()) {
-      newErrors.name = 'Name is required';
+    if (!firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+
+    if (!lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
     }
 
     if (!email.trim()) {
@@ -64,46 +54,22 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
     if (!validateForm()) {
       return;
     }
 
     setLoading(true);
 
-<<<<<<< HEAD
-    // Mock registration - replace with actual API call
     setTimeout(() => {
-      const [firstName, ...lastNameParts] = name.split(' ');
-      const lastName = lastNameParts.join(' ') || '';
-      
-      const mockUser: User = {
-        id: Date.now().toString(),
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        role: role as 'ADMIN' | 'USER'
-      };
-      
-=======
-    // Simulate registration
-    setTimeout(() => {
-      const [firstName, ...lastNameParts] = name.trim().split(' ');
-      const lastName = lastNameParts.join(' ') || '';
-
       const mockUser: User = {
         id: Date.now().toString(),
         email,
-        firstName,
-        lastName,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
         role,
       };
 
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
       onRegister(mockUser, 'mock-jwt-token');
       setLoading(false);
     }, 1000);
@@ -123,108 +89,55 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
             Sign up for your Garment Inventory System
           </p>
         </div>
-<<<<<<< HEAD
-        
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="sr-only">
-                Full Name
-              </label>
-              <input
-                id="name"
-                name="name"
-=======
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">
-            {/* Name Field */}
+            {/* First Name */}
             <div>
-              <label htmlFor="name" className="sr-only">Full Name</label>
+              <label htmlFor="firstName" className="sr-only">First Name</label>
               <input
-                id="name"
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
+                id="firstName"
                 type="text"
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-<<<<<<< HEAD
-                className={`relative block w-full px-3 py-3 border ${
-                  errors.name ? 'border-red-500' : 'border-gray-600'
-                } bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm`}
-                placeholder="Full Name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className={`block w-full px-3 py-3 border ${errors.firstName ? 'border-red-500' : 'border-gray-600'} bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
+                placeholder="First Name"
               />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-400">{errors.name}</p>
-              )}
+              {errors.firstName && <p className="mt-1 text-sm text-red-400">{errors.firstName}</p>}
             </div>
 
+            {/* Last Name */}
             <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
+              <label htmlFor="lastName" className="sr-only">Last Name</label>
               <input
-                id="email"
-                name="email"
-=======
-                className={`block w-full px-3 py-3 border ${errors.name ? 'border-red-500' : 'border-gray-600'} bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
-                placeholder="Full Name"
+                id="lastName"
+                type="text"
+                required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className={`block w-full px-3 py-3 border ${errors.lastName ? 'border-red-500' : 'border-gray-600'} bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
+                placeholder="Last Name"
               />
-              {errors.name && <p className="mt-1 text-sm text-red-400">{errors.name}</p>}
+              {errors.lastName && <p className="mt-1 text-sm text-red-400">{errors.lastName}</p>}
             </div>
 
-            {/* Email Field */}
+            {/* Email */}
             <div>
               <label htmlFor="email" className="sr-only">Email</label>
               <input
                 id="email"
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-<<<<<<< HEAD
-                className={`relative block w-full px-3 py-3 border ${
-                  errors.email ? 'border-red-500' : 'border-gray-600'
-                } bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm`}
-                placeholder="Email address"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-400">{errors.email}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="role" className="sr-only">
-                Role
-              </label>
-              <select
-                id="role"
-                name="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="relative block w-full px-3 py-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm"
-              >
-                <option value="USER">User</option>
-                <option value="ADMIN">Admin</option>
-              </select>
-            </div>
-            
-            <div className="relative">
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-=======
                 className={`block w-full px-3 py-3 border ${errors.email ? 'border-red-500' : 'border-gray-600'} bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
                 placeholder="Email address"
               />
               {errors.email && <p className="mt-1 text-sm text-red-400">{errors.email}</p>}
             </div>
 
-            {/* Role Select */}
+            {/* Role */}
             <div>
               <label htmlFor="role" className="sr-only">Role</label>
               <select
@@ -240,23 +153,16 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
               </select>
             </div>
 
-            {/* Password Field */}
+            {/* Password */}
             <div className="relative">
               <label htmlFor="password" className="sr-only">Password</label>
               <input
                 id="password"
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
                 type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-<<<<<<< HEAD
-                className={`relative block w-full px-3 py-3 pr-10 border ${
-                  errors.password ? 'border-red-500' : 'border-gray-600'
-                } bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm`}
-=======
                 className={`block w-full px-3 py-3 pr-10 border ${errors.password ? 'border-red-500' : 'border-gray-600'} bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
                 placeholder="Password"
               />
               <button
@@ -264,48 +170,21 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
               >
-<<<<<<< HEAD
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-400">{errors.password}</p>
-              )}
-            </div>
-
-            <div className="relative">
-              <label htmlFor="confirmPassword" className="sr-only">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-=======
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
               {errors.password && <p className="mt-1 text-sm text-red-400">{errors.password}</p>}
             </div>
 
-            {/* Confirm Password Field */}
+            {/* Confirm Password */}
             <div className="relative">
               <label htmlFor="confirmPassword" className="sr-only">Confirm Password</label>
               <input
                 id="confirmPassword"
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
                 type={showConfirmPassword ? 'text' : 'password'}
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-<<<<<<< HEAD
-                className={`relative block w-full px-3 py-3 pr-10 border ${
-                  errors.confirmPassword ? 'border-red-500' : 'border-gray-600'
-                } bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm`}
-=======
                 className={`block w-full px-3 py-3 pr-10 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-600'} bg-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm`}
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
                 placeholder="Confirm Password"
               />
               <button
@@ -313,28 +192,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
               >
-<<<<<<< HEAD
-                {showConfirmPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-              {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-400">{errors.confirmPassword}</p>
-              )}
-            </div>
-          </div>
-
-=======
                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
               {errors.confirmPassword && <p className="mt-1 text-sm text-red-400">{errors.confirmPassword}</p>}
             </div>
           </div>
 
-          {/* Submit Button */}
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
+          {/* Submit */}
           <div>
             <Button
               type="submit"
@@ -345,16 +209,15 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
             </Button>
           </div>
         </form>
-<<<<<<< HEAD
-        
-=======
 
         {/* Footer */}
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f
         <div className="text-center">
           <p className="text-xs text-gray-400">
             Already have an account?{' '}
-            <button className="text-emerald-400 hover:text-emerald-300">
+            <button 
+              onClick={() => window.location.href = '/login'}
+              className="text-emerald-400 hover:text-emerald-300"
+            >
               Sign in
             </button>
           </p>
@@ -362,8 +225,4 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
       </div>
     </div>
   );
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> f2510afe106cc337db3777bd50bb9fcccf6a8e6f

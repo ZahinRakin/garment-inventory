@@ -1,6 +1,5 @@
 // import React from 'react';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-
+import { RouterProvider, createBrowserRouter, Navigate } from 'react-router-dom';
 
 import { LoginForm } from './components/auth/LoginForm';
 import { RegistrationForm } from './components/auth/RegistrationForm';
@@ -8,42 +7,48 @@ import { Layout } from './components/common/Layout';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { useAuth } from './hooks/useAuth';
 import { ErrorPage } from './components/common/ErrorElement';
-import { RegistrationForm } from './components/auth/RegistrationForm';
-
-
 
 function App() {
-  const { user, isAuthenticated, login, logout } = useAuth();
+  const { user, isAuthenticated, login, logout, register } = useAuth();
+
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Layout />, // Layout wraps child routes
+      element: isAuthenticated ? (
+        <Layout user={user} onLogout={logout}>
+          <Dashboard />
+        </Layout>
+      ) : (
+        <Navigate to="/login" replace />
+      ),
       children: [
         {
           index: true,
           element: <Dashboard />
-        },{
-          path: 'login',
-          element: <LoginForm onLogin={login} onRegister={register} />,
-          errorElement: <ErrorPage errorCode="401" errorMessage="Unauthorized access. Please log in." />
         }
       ]
+    },
+    {
+      path: '/login',
+      element: isAuthenticated ? (
+        <Navigate to="/" replace />
+      ) : (
+        <LoginForm onLogin={login} onRegister={() => window.location.href = '/register'} />
+      ),
+      errorElement: <ErrorPage errorCode="401" errorMessage="Unauthorized access. Please log in." />
+    },
+    {
+      path: '/register',
+      element: isAuthenticated ? (
+        <Navigate to="/" replace />
+      ) : (
+        <RegistrationForm onRegister={register} />
+      ),
+      errorElement: <ErrorPage errorCode="400" errorMessage="Registration failed. Please try again." />
     }
   ]);
 
-  if (!isAuthenticated) {
-    return <LoginForm onLogin={login} />;
-  }
-
-  return (
-    <div>
-      <RouterProvider router={router} >
-        <Layout user={user} onLogout={logout}>
-          <Dashboard />
-        </Layout>
-      </ RouterProvider>
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

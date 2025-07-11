@@ -18,6 +18,15 @@ export const useAuth = () => {
     setAuthState(newAuthState);
   };
 
+  const register = (user: User, token: string) => {
+    const newAuthState = {
+      user,
+      token,
+      isAuthenticated: true
+    };
+    setAuthState(newAuthState);
+  };
+
   const logout = () => {
     const newAuthState = {
       user: null,
@@ -31,6 +40,7 @@ export const useAuth = () => {
   return {
     ...authState,
     login,
-    logout
+    logout,
+    register
   };
 };
