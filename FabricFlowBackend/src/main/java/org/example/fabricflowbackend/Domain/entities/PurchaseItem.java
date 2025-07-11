@@ -7,18 +7,24 @@ public class PurchaseItem {
     private UUID id;
     private UUID purchaseId;
     private UUID materialId;
-    private Integer quantity;
+    private int quantity;
     private BigDecimal unitPrice;
 
     public PurchaseItem() {
-        this.id = UUID.randomUUID();
+
     }
 
-    public PurchaseItem(UUID materialId, Integer quantity, BigDecimal unitPrice) {
+    public PurchaseItem(UUID purchaseId, UUID materialId, int quantity, BigDecimal unitPrice) {
         this();
+        this.purchaseId = purchaseId;
         this.materialId = materialId;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+    }
+
+    // Business logic methods
+    public BigDecimal getTotalPrice() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
     // Getters and Setters
@@ -31,13 +37,9 @@ public class PurchaseItem {
     public UUID getMaterialId() { return materialId; }
     public void setMaterialId(UUID materialId) { this.materialId = materialId; }
 
-    public Integer getQuantity() { return quantity; }
-    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
 
     public BigDecimal getUnitPrice() { return unitPrice; }
     public void setUnitPrice(BigDecimal unitPrice) { this.unitPrice = unitPrice; }
-
-    public BigDecimal getTotalPrice() {
-        return unitPrice.multiply(BigDecimal.valueOf(quantity));
-    }
 }
