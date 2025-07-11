@@ -1,42 +1,97 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
+import axios from 'axios';
+import { getStoredAuth } from '../../utils/auth';
 
 // --- Types based on backend DTOs ---
 interface StockSummaryReport {
-  totalProducts: number;
   totalRawMaterials: number;
-  lowStockItems: number;
-  outOfStockItems: number;
+  lowStockRawMaterials: number;
+  totalVariants: number;
+  lowStockVariants: number;
 }
 
 interface LowStockItem {
+  type: string;
   id: string;
   name: string;
-  currentStock: number;
-  reorderLevel: number;
+  current: number;
+  threshold: number;
 }
 
-// --- Dummy Data ---
-// TODO: Replace with backend API calls to /api/reports/inventory
-const dummyStockSummary: StockSummaryReport = {
-  totalProducts: 35,
-  totalRawMaterials: 18,
-  lowStockItems: 4,
-  outOfStockItems: 1,
-};
-
-const dummyLowStockItems: LowStockItem[] = [
-  { id: '1', name: 'Cotton Fabric', currentStock: 120, reorderLevel: 200 },
-  { id: '2', name: 'Polyester Thread', currentStock: 30, reorderLevel: 50 },
-  { id: '3', name: 'Metal Button', currentStock: 900, reorderLevel: 1000 },
-  { id: '4', name: 'Elastic Band', currentStock: 40, reorderLevel: 100 },
-];
-
 export const InventoryReportPage: React.FC = () => {
-  // TODO: Fetch inventory report data from backend here
-  // useEffect(() => { fetch('/api/reports/inventory') ... }, []);
-  const stockSummary = dummyStockSummary;
-  const lowStockItems = dummyLowStockItems;
+  const [stockSummary, setStockSummary] = useState<StockSummaryReport>({
+    totalRawMaterials: 0,
+    lowStockRawMaterials: 0,
+    totalVariants: 0,
+    lowStockVariants: 0
+  });
+  const [lowStockItems, setLowStockItems] = useState<LowStockItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchInventoryData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch stock summary and low stock items in parallel
+        const [stockSummaryResponse, lowStockResponse] = await Promise.all([
+          axios.get("/api/reports/stock-summary", {
+            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+          }),
+          axios.get("/api/reports/low-stock", {
+            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+          })
+        ]);
+
+        const summaryData: StockSummaryReport = stockSummaryResponse.data;
+        const lowStockData: LowStockItem[] = lowStockResponse.data;
+
+        setStockSummary(summaryData);
+        setLowStockItems(lowStockData);
+      } catch (error) {
+        console.error('Error fetching inventory data:', error);
+        setError('Failed to load inventory data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInventoryData();
+  }, []);
+
+  // Calculate derived values
+  const totalProducts = stockSummary.totalVariants;
+  const totalRawMaterials = stockSummary.totalRawMaterials;
+  const lowStockItemsCount = stockSummary.lowStockRawMaterials + stockSummary.lowStockVariants;
+  const outOfStockItems = lowStockItems.filter(item => item.current === 0).length;
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold text-gray-900">Inventory Report</h1>
+        </div>
+        <div className="text-center py-8">
+          <div className="text-gray-500">Loading inventory data...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold text-gray-900">Inventory Report</h1>
+        </div>
+        <div className="text-center py-8">
+          <div className="text-red-500">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -48,19 +103,19 @@ export const InventoryReportPage: React.FC = () => {
           <div className="flex flex-col gap-2">
             <div className="flex justify-between text-lg">
               <span className="text-gray-700">Total Products</span>
-              <span className="font-bold text-blue-700">{stockSummary.totalProducts}</span>
+              <span className="font-bold text-blue-700">{totalProducts}</span>
             </div>
             <div className="flex justify-between text-lg">
               <span className="text-gray-700">Total Raw Materials</span>
-              <span className="font-bold text-blue-700">{stockSummary.totalRawMaterials}</span>
+              <span className="font-bold text-blue-700">{totalRawMaterials}</span>
             </div>
             <div className="flex justify-between text-lg">
               <span className="text-gray-700">Low Stock Items</span>
-              <span className="font-bold text-orange-600">{stockSummary.lowStockItems}</span>
+              <span className="font-bold text-orange-600">{lowStockItemsCount}</span>
             </div>
             <div className="flex justify-between text-lg">
               <span className="text-gray-700">Out of Stock Items</span>
-              <span className="font-bold text-red-600">{stockSummary.outOfStockItems}</span>
+              <span className="font-bold text-red-600">{outOfStockItems}</span>
             </div>
           </div>
         </Card>
@@ -74,13 +129,25 @@ export const InventoryReportPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {lowStockItems.map(item => (
-                <tr key={item.id} className="border-b hover:bg-orange-50 transition-colors">
-                  <td className="px-4 py-2 text-gray-900">{item.name}</td>
-                  <td className="px-4 py-2 text-gray-700">{item.currentStock}</td>
-                  <td className="px-4 py-2 text-gray-700">{item.reorderLevel}</td>
+              {lowStockItems && lowStockItems.length > 0 ? (
+                lowStockItems.map(item => (
+                  <tr key={item.id} className="border-b hover:bg-orange-50 transition-colors">
+                    <td className="px-4 py-2 text-gray-900">{item.name}</td>
+                    <td className={`px-4 py-2 text-gray-700 ${
+                      item.current === 0 ? 'text-red-600 font-semibold' : ''
+                    }`}>
+                      {item.current}
+                    </td>
+                    <td className="px-4 py-2 text-gray-700">{item.threshold}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3} className="px-4 py-2 text-center text-gray-500">
+                    No low stock items found
+                  </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </Card>

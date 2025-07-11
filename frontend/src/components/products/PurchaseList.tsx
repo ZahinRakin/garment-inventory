@@ -1,49 +1,67 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
+import axios from 'axios';
+import { getStoredAuth } from '../../utils/auth';
 
 interface Purchase {
   id: string;
   supplierId: string;
   orderDate: string;
   status: string;
-  totalAmount: string;
+  totalAmount: number;
   createdAt: string;
 }
 
-// TODO: Replace this dummy data with a backend API call to /api/purchases
-const dummyPurchases: Purchase[] = [
-  {
-    id: '1',
-    supplierId: '1',
-    orderDate: '2024-01-15',
-    status: 'DELIVERED',
-    totalAmount: '15000.00',
-    createdAt: '2024-01-15T10:00:00Z',
-  },
-  {
-    id: '2',
-    supplierId: '2',
-    orderDate: '2024-01-10',
-    status: 'PENDING',
-    totalAmount: '5000.00',
-    createdAt: '2024-01-10T09:00:00Z',
-  },
-  {
-    id: '3',
-    supplierId: '3',
-    orderDate: '2024-01-05',
-    status: 'CANCELLED',
-    totalAmount: '0.00',
-    createdAt: '2024-01-05T08:00:00Z',
-  },
-];
-
 export const PurchaseList: React.FC = () => {
-  // TODO: Fetch purchases from backend here
-  // useEffect(() => { fetch('/api/purchases') ... }, []);
-  const purchases = dummyPurchases;
-  const loading = false;
-  const error = null;
+  const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPurchases = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/api/purchases", {
+          headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+        });
+        
+        const purchasesData: Purchase[] = response.data;
+        setPurchases(purchasesData);
+      } catch (error) {
+        console.error('Error fetching purchases:', error);
+        setError('Failed to load purchases');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPurchases();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  const formatDateTime = (dateTimeString: string) => {
+    return new Date(dateTimeString).toLocaleString();
+  };
+
+  const formatCurrency = (amount: number) => {
+    return `৳ ${amount.toLocaleString()}`;
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'text-orange-600 bg-orange-100';
+      case 'DELIVERED':
+        return 'text-green-600 bg-green-100';
+      case 'CANCELLED':
+        return 'text-red-600 bg-red-100';
+      default:
+        return 'text-gray-600 bg-gray-100';
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -71,10 +89,14 @@ export const PurchaseList: React.FC = () => {
               <tbody>
                 {purchases.map(purchase => (
                   <tr key={purchase.id} className="border-b hover:bg-emerald-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-900">{purchase.orderDate}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{purchase.status}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{purchase.totalAmount}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">{new Date(purchase.createdAt).toLocaleString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-900">{formatDate(purchase.orderDate)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(purchase.status)}`}>
+                        {purchase.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{formatCurrency(purchase.totalAmount)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">{formatDateTime(purchase.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>

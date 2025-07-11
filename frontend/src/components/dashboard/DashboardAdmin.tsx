@@ -1,5 +1,4 @@
-import React from 'react';
-// import { Card } from '../common/Card';
+
 import { DashboardStats } from './DashboardStats';
 import { RecentActivity } from './RecentActivity';
 import { PurchaseSummary } from './PurchaseSummary';

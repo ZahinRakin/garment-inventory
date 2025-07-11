@@ -1,7 +1,15 @@
+//-----------------------------------------------------------------//
+// expected accessToken from response.data.accessToken-------------//
+// expected user from response.data.user---------------------------//
+// api endpoint   /api/login---------------------------------------//
+//-----------------------------------------------------------------//
+
 import React, { useState } from 'react';
 import { Eye, EyeOff, Package } from 'lucide-react';
 import { Button } from '../common/Button';
 import type { User } from '../../types';
+import axios from "axios";
+import { LoadingAnimation } from '../common/LoadingAnimation';
 
 interface LoginFormProps {
   onLogin: (user: User, token: string) => void;
@@ -18,20 +26,41 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
     e.preventDefault();
     setLoading(true);
 
-    // Mock authentication - replace with actual API call
-    setTimeout(() => {
-      const mockUser: User = {
-        id: '1',
+    try {
+      const response = await axios.post("/api/login", {
         email: email,
-        firstName: 'John',
-        lastName: 'Doe',
-        role: 'STORE_MANAGER' // Change this to 'ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER', or 'SALES_OFFICER'
-      };
+        password: password
+      });
       
-      onLogin(mockUser, 'mock-jwt-token');
+      const accessToken = response.data.accessToken;
+      const user = response.data.user; // I might neet to morf this user into User data type that is declared inside types/index.ts
+      
+      if(response.status == 200){
+        onLogin(user, accessToken);
+      }
       setLoading(false);
-    }, 1000);
+    } catch (error) {
+      console.error(error);
+    }
+
+    // // Mock authentication - replace with actual API call
+    // setTimeout(() => {
+    //   const mockUser: User = {
+    //     id: '1',
+    //     email: email,
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     role: 'STORE_MANAGER' // Change this to 'ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER', or 'SALES_OFFICER'
+    //   };
+      
+      //onLogin(mockUser, "mock_access_token")
+      // setLoading(false);
+    // }, 1000);
   };
+
+  if(loading){
+    return <LoadingAnimation text='Logging in...'/>
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900">

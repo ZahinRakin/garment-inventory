@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
+import axios from 'axios';
+import { getStoredAuth } from '../../utils/auth';
 
 // --- Types based on backend DTOs ---
 interface SalesReport {
@@ -11,31 +13,102 @@ interface SalesReport {
 
 interface TopItem {
   id: string;
-  name: string;
-  soldQuantity: number;
-  revenue: number;
+  count: number;
 }
 
-// --- Dummy Data ---
-// TODO: Replace with backend API calls to /api/reports/sales
-const dummySalesReport: SalesReport = {
-  totalSales: 120,
-  totalOrders: 95,
-  totalRevenue: 250000,
-  period: 'Jan 2024',
-};
-
-const dummyTopItems: TopItem[] = [
-  { id: '1', name: 'Cotton Shirt', soldQuantity: 320, revenue: 48000 },
-  { id: '2', name: 'Denim Jeans', soldQuantity: 210, revenue: 63000 },
-  { id: '3', name: 'Silk Scarf', soldQuantity: 150, revenue: 22500 },
-];
+interface RevenueData {
+  totalRevenue: number;
+  orderCount: number;
+}
 
 export const SalesReportPage: React.FC = () => {
-  // TODO: Fetch sales report data from backend here
-  // useEffect(() => { fetch('/api/reports/sales') ... }, []);
-  const salesReport = dummySalesReport;
-  const topItems = dummyTopItems;
+  const [salesReport, setSalesReport] = useState<SalesReport>({
+    totalSales: 0,
+    totalOrders: 0,
+    totalRevenue: 0,
+    period: ''
+  });
+  const [topItems, setTopItems] = useState<TopItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        setLoading(true);
+        
+        // Calculate current month date range
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        const startDate = startOfMonth.toISOString().split('T')[0];
+        const endDate = endOfMonth.toISOString().split('T')[0];
+        const period = `${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}`;
+
+        // Fetch sales data from multiple endpoints in parallel
+        const [revenueResponse, topProductsResponse] = await Promise.all([
+          axios.get(`/api/reports/sales/revenue?startDate=${startDate}&endDate=${endDate}`, {
+            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+          }),
+          axios.get("/api/reports/sales/top-products?limit=5", {
+            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+          })
+        ]);
+
+        const revenueData: RevenueData = revenueResponse.data;
+        const topProductsData: TopItem[] = topProductsResponse.data;
+
+        // Process sales report data
+        setSalesReport({
+          totalSales: revenueData.totalRevenue,
+          totalOrders: revenueData.orderCount,
+          totalRevenue: revenueData.totalRevenue,
+          period
+        });
+
+        // Process top selling items
+        setTopItems(topProductsData);
+
+      } catch (error) {
+        console.error('Error fetching sales data:', error);
+        setError('Failed to load sales data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSalesData();
+  }, []);
+
+  const formatCurrency = (amount: number) => {
+    return `৳ ${amount.toLocaleString()}`;
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold text-gray-900">Sales Report</h1>
+        </div>
+        <div className="text-center py-8">
+          <div className="text-gray-500">Loading sales data...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold text-gray-900">Sales Report</h1>
+        </div>
+        <div className="text-center py-8">
+          <div className="text-red-500">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -48,7 +121,7 @@ export const SalesReportPage: React.FC = () => {
           <div className="flex flex-col gap-2">
             <div className="flex justify-between text-lg">
               <span className="text-gray-700">Total Sales</span>
-              <span className="font-bold text-emerald-700">{salesReport.totalSales}</span>
+              <span className="font-bold text-emerald-700">{formatCurrency(salesReport.totalSales)}</span>
             </div>
             <div className="flex justify-between text-lg">
               <span className="text-gray-700">Total Orders</span>
@@ -56,7 +129,7 @@ export const SalesReportPage: React.FC = () => {
             </div>
             <div className="flex justify-between text-lg">
               <span className="text-gray-700">Total Revenue</span>
-              <span className="font-bold text-emerald-700">৳ {salesReport.totalRevenue.toLocaleString()}</span>
+              <span className="font-bold text-emerald-700">{formatCurrency(salesReport.totalRevenue)}</span>
             </div>
           </div>
         </Card>
@@ -64,19 +137,25 @@ export const SalesReportPage: React.FC = () => {
           <table className="min-w-full bg-white rounded-lg">
             <thead className="bg-emerald-100">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-emerald-700">Name</th>
+                <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-emerald-700">Variant ID</th>
                 <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-emerald-700">Sold Quantity</th>
-                <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-emerald-700">Revenue</th>
               </tr>
             </thead>
             <tbody>
-              {topItems.map(item => (
-                <tr key={item.id} className="border-b hover:bg-emerald-50 transition-colors">
-                  <td className="px-4 py-2 text-gray-900">{item.name}</td>
-                  <td className="px-4 py-2 text-gray-700">{item.soldQuantity}</td>
-                  <td className="px-4 py-2 text-gray-700">৳ {item.revenue.toLocaleString()}</td>
+              {topItems && topItems.length > 0 ? (
+                topItems.map(item => (
+                  <tr key={item.id} className="border-b hover:bg-emerald-50 transition-colors">
+                    <td className="px-4 py-2 text-gray-900">{item.id}</td>
+                    <td className="px-4 py-2 text-gray-700">{item.count}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={2} className="px-4 py-2 text-center text-gray-500">
+                    No sales data available
+                  </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </Card>

@@ -41,7 +41,7 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getRawMaterialStockReport());
     }
 
-    @GetMapping("/finished-goods-stock")
+    @GetMapping("/finished-goods-stock")  //here the dto in use is what?
     public ResponseEntity<Map<String, Object>> getFinishedGoodsStockReport() {
         return ResponseEntity.ok(reportService.getFinishedGoodsStockReport());
     }

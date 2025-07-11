@@ -2,7 +2,7 @@ import type { AuthState, User } from '../types/index';
 
 const AUTH_STORAGE_KEY = 'garment_inventory_auth';
 
-export const getStoredAuth = (): AuthState => {
+const getStoredAuth = (): AuthState => {
   try {
     const stored = localStorage.getItem(AUTH_STORAGE_KEY);
     if (stored) {
@@ -19,7 +19,7 @@ export const getStoredAuth = (): AuthState => {
   };
 };
 
-export const storeAuth = (auth: AuthState): void => {
+const storeAuth = (auth: AuthState): void => {
   try {
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
   } catch (error) {
@@ -27,7 +27,7 @@ export const storeAuth = (auth: AuthState): void => {
   }
 };
 
-export const clearAuth = (): void => {
+const clearAuth = (): void => {
   try {
     localStorage.removeItem(AUTH_STORAGE_KEY);
   } catch (error) {
@@ -35,17 +35,17 @@ export const clearAuth = (): void => {
   }
 };
 
-export const hasPermission = (user: User | null, requiredRoles: string[]): boolean => {
+const hasPermission = (user: User | null, requiredRoles: string[]): boolean => {
   if (!user) return false;
   return requiredRoles.includes(user.role);
 };
 
-export const formatUserName = (user: User | null): string => {
+const formatUserName = (user: User | null): string => {
   if (!user) return '';
   return `${user.firstName} ${user.lastName}`;
 };
 
-export const getRoleDisplayName = (role: string): string => {
+const getRoleDisplayName = (role: string): string => {
   switch (role) {
     case 'ADMIN':
       return 'Administrator';
@@ -59,3 +59,13 @@ export const getRoleDisplayName = (role: string): string => {
       return role;
   }
 };
+
+
+export {
+  getStoredAuth,
+  storeAuth,
+  clearAuth,
+  hasPermission,
+  formatUserName,
+  getRoleDisplayName
+}

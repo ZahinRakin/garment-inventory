@@ -1,7 +1,17 @@
+//-----------------------------------------------------------------//
+// expected accessToken from response.data.accessToken-------------//
+// expected user from response.data.user---------------------------//
+// api endpoint   /api/register------------------------------------//
+//-----------------------------------------------------------------//
+
 import React, { useState } from 'react';
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
+import axios from "axios";
+
+
 import { Button } from '../common/Button';
 import type { User } from '../../types';
+import { LoadingAnimation } from '../common/LoadingAnimation';
 
 interface RegistrationFormProps {
   onRegister: (user: User, token: string) => void;
@@ -61,19 +71,42 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
 
     setLoading(true);
 
-    setTimeout(() => {
-      const mockUser: User = {
-        id: Date.now().toString(),
+    try {
+      const response = await axios.post("/api/register", {
+        firstName,
+        lastName,
         email,
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        role,
-      };
+        password
+      });
+      const user = response.data.user;
+      const accessToken = response.data.accessToken;
 
-      onRegister(mockUser, 'mock-jwt-token');
+      onRegister(user, accessToken);
       setLoading(false);
-    }, 1000);
+
+      
+    } catch (error) {
+      console.error(error);      
+    }
+
+    // setTimeout(() => {
+    //   const mockUser: User = {
+    //     id: Date.now().toString(),
+    //     email,
+    //     firstName: firstName.trim(),
+    //     lastName: lastName.trim(),
+    //     role,
+    //   };
+
+    //   onRegister(mockUser, 'mock-jwt-token');
+    //   setLoading(false);
+    // }, 1000);
   };
+
+  if(loading){
+    return <LoadingAnimation text='Registering...'/>
+  }
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900">

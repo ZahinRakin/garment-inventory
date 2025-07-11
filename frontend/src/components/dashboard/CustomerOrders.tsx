@@ -1,15 +1,56 @@
-import React from 'react';
-import { Card } from '../common/Card';
+//-----------------------------------------------------------------------------------------//
+// api endpoint /api/sales/orders----------------------------------------------------------//
+// method: get ----------------------------------------------------------------------------//
+// expected orders at response.data--------------------------------------------------------//
+// send accessToken at bearer token--------------------------------------------------------//
+// ----------------------------------------------------------------------------------------//
 
-// Dummy data matching what /api/reports/sales or /api/sales/orders might return
-const dummyOrders = [
-  { id: 'SO-2024-001', customer: 'Alice Smith', date: '2024-01-15', status: 'PENDING', total: 1200 },
-  { id: 'SO-2024-002', customer: 'Bob Lee', date: '2024-01-14', status: 'DELIVERED', total: 950 },
-  { id: 'SO-2024-003', customer: 'Carol Kim', date: '2024-01-13', status: 'DELIVERED', total: 780 },
-];
+import React, { useEffect, useState } from 'react';
+import { Card } from '../common/Card';
+import axios from 'axios';
+import { getStoredAuth } from '../../utils/auth';
 
 export const CustomerOrders: React.FC = () => {
-  // TODO: Fetch from backend: /api/reports/sales or /api/sales/orders
+  const [orders, setOrders] = useState<any[]>([
+    {
+      id: '00000000-0000-0000-0000-000000000001',
+      customerName: 'Alice Smith',
+      status: 'PENDING',
+      orderDate: '2024-01-15',
+      totalAmount: 1200.00,
+    },
+    {
+      id: '00000000-0000-0000-0000-000000000002',
+      customerName: 'Bob Lee',
+      status: 'DELIVERED',
+      orderDate: '2024-01-14',
+      totalAmount: 950.00,
+    },
+    {
+      id: '00000000-0000-0000-0000-000000000003',
+      customerName: 'Carol Kim',
+      status: 'DELIVERED',
+      orderDate: '2024-01-13',
+      totalAmount: 780.00,
+    }
+  ]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get("/api/sales/orders", {
+          headers: {
+            Authorization: `Bearer ${getStoredAuth().token}`
+          }
+        });
+        console.log(response.data); //debugging log
+        setOrders(response.data);
+      } catch (error) {
+        console.error(error); //debugging log
+      }
+    };
+    fetchOrders();
+  }, []);
 
   return (
     <Card title="Customer Orders">
@@ -25,19 +66,20 @@ export const CustomerOrders: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {dummyOrders.map((order, idx) => (
+            {orders.map((order, idx) => (
               <tr key={idx} className="border-b last:border-0">
                 <td className="px-4 py-2 font-medium text-gray-900">{order.id}</td>
-                <td className="px-4 py-2">{order.customer}</td>
-                <td className="px-4 py-2">{order.date}</td>
-                <td className={`px-4 py-2 ${order.status === 'PENDING' ? 'text-orange-600' : 'text-emerald-700'}`}>{order.status}</td>
-                <td className="px-4 py-2 text-right">${order.total.toLocaleString()}</td>
+                <td className="px-4 py-2">{order.customerName}</td>
+                <td className="px-4 py-2">{order.orderDate}</td>
+                <td className={`px-4 py-2 ${order.status === 'PENDING' ? 'text-orange-600' : 'text-emerald-700'}`}>
+                  {order.status}
+                </td>
+                <td className="px-4 py-2 text-right">${Number(order.totalAmount).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="text-xs text-gray-400 mt-2">(Replace with backend data)</div>
     </Card>
   );
-}; 
+};

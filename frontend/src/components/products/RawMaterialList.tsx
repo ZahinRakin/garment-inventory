@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
+import axios from 'axios';
+import { getStoredAuth } from '../../utils/auth';
 
 interface RawMaterial {
   id: string;
@@ -11,43 +13,44 @@ interface RawMaterial {
   createdAt: string; // ISO string for now
 }
 
-// TODO: Replace this dummy data with a backend API call to /api/raw-materials
-const dummyRawMaterials: RawMaterial[] = [
-  {
-    id: '1',
-    name: 'Cotton Fabric',
-    unit: 'meter',
-    currentStock: 1200,
-    reorderLevel: 200,
-    category: 'Fabric',
-    createdAt: '2024-01-01T10:00:00Z',
-  },
-  {
-    id: '2',
-    name: 'Polyester Thread',
-    unit: 'spool',
-    currentStock: 300,
-    reorderLevel: 50,
-    category: 'Thread',
-    createdAt: '2024-01-05T14:30:00Z',
-  },
-  {
-    id: '3',
-    name: 'Metal Button',
-    unit: 'piece',
-    currentStock: 5000,
-    reorderLevel: 1000,
-    category: 'Accessory',
-    createdAt: '2024-01-10T09:15:00Z',
-  },
-];
-
 export const RawMaterialList: React.FC = () => {
-  // TODO: Fetch raw materials from backend here
-  // useEffect(() => { fetch('/api/raw-materials') ... }, []);
-  const rawMaterials = dummyRawMaterials;
-  const loading = false;
-  const error = null;
+  const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRawMaterials = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/api/raw-materials", {
+          headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+        });
+        
+        const materialsData: RawMaterial[] = response.data;
+        setRawMaterials(materialsData);
+      } catch (error) {
+        console.error('Error fetching raw materials:', error);
+        setError('Failed to load raw materials');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRawMaterials();
+  }, []);
+
+  const formatDateTime = (dateTimeString: string) => {
+    return new Date(dateTimeString).toLocaleString();
+  };
+
+  const getStockStatusColor = (currentStock: number, reorderLevel: number) => {
+    if (currentStock === 0) {
+      return 'text-red-600 font-semibold';
+    } else if (currentStock <= reorderLevel) {
+      return 'text-orange-600 font-semibold';
+    }
+    return 'text-gray-700';
+  };
 
   return (
     <div className="space-y-6">
@@ -80,9 +83,11 @@ export const RawMaterialList: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-gray-900">{material.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-700">{material.category}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-700">{material.unit}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{material.currentStock}</td>
+                    <td className={`px-6 py-4 whitespace-nowrap ${getStockStatusColor(material.currentStock, material.reorderLevel)}`}>
+                      {material.currentStock}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-700">{material.reorderLevel}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">{new Date(material.createdAt).toLocaleString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">{formatDateTime(material.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>

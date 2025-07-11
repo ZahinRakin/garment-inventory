@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { RawMaterialsStock } from './RawMaterialsStock';
 import { ProductStock } from './ProductStock';
 import { LowStockAlerts } from './LowStockAlerts';

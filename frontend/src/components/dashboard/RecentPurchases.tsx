@@ -1,15 +1,105 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
+import axios from 'axios';
+import { getStoredAuth } from '../../utils/auth';
 
-// Dummy data matching what /api/purchases or /api/reports/purchases might return
-const dummyPurchases = [
-  { id: 'PR-2024-001', supplier: 'Textile Suppliers Ltd.', date: '2024-01-15', status: 'RECEIVED', total: 12000 },
-  { id: 'PR-2024-002', supplier: 'Global Fabrics Co.', date: '2024-01-14', status: 'PENDING', total: 9500 },
-  { id: 'PR-2024-003', supplier: 'Cotton World', date: '2024-01-13', status: 'RECEIVED', total: 7800 },
-];
+interface Purchase {
+  id: string;
+  supplierId: string;
+  orderDate: string;
+  status: string;
+  totalAmount: number;
+  createdAt: string;
+}
+
+interface Supplier {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+interface PurchaseDisplay {
+  id: string;
+  supplier: string;
+  date: string;
+  status: string;
+  total: number;
+}
 
 export const RecentPurchases: React.FC = () => {
-  // TODO: Fetch from backend: /api/purchases or /api/reports/purchases
+  const [purchases, setPurchases] = useState<PurchaseDisplay[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRecentPurchases = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch purchases and suppliers in parallel
+        const [purchasesResponse, suppliersResponse] = await Promise.all([
+          axios.get("/api/purchases", {
+            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+          }),
+          axios.get("/api/suppliers", {
+            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+          })
+        ]);
+
+        const purchaseData: Purchase[] = purchasesResponse.data;
+        const suppliers: Supplier[] = suppliersResponse.data;
+
+        // Create supplier map
+        const supplierMap = new Map<string, string>();
+        suppliers.forEach(supplier => {
+          supplierMap.set(supplier.id, supplier.name);
+        });
+
+        // Transform purchase data for display
+        const transformedPurchases: PurchaseDisplay[] = purchaseData
+          .slice(0, 5) // Get recent 5 purchases
+          .map(purchase => ({
+            id: purchase.id.slice(0, 8), // Short ID for display
+            supplier: supplierMap.get(purchase.supplierId) || 'Unknown Supplier',
+            date: purchase.orderDate,
+            status: purchase.status,
+            total: purchase.totalAmount
+          }))
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date
+
+        setPurchases(transformedPurchases);
+      } catch (error) {
+        console.error('Error fetching recent purchases:', error);
+        setError('Failed to load recent purchases data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentPurchases();
+  }, []);
+
+  if (loading) {
+    return (
+      <Card title="Recent Purchases">
+        <div className="text-center py-4">
+          <div className="text-gray-500">Loading...</div>
+        </div>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card title="Recent Purchases">
+        <div className="text-center py-4">
+          <div className="text-red-500">{error}</div>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card title="Recent Purchases">
@@ -25,19 +115,32 @@ export const RecentPurchases: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {dummyPurchases.map((purchase, idx) => (
-              <tr key={idx} className="border-b last:border-0">
-                <td className="px-4 py-2 font-medium text-gray-900">{purchase.id}</td>
-                <td className="px-4 py-2">{purchase.supplier}</td>
-                <td className="px-4 py-2">{purchase.date}</td>
-                <td className={`px-4 py-2 ${purchase.status === 'PENDING' ? 'text-orange-600' : 'text-emerald-700'}`}>{purchase.status}</td>
-                <td className="px-4 py-2 text-right">${purchase.total.toLocaleString()}</td>
+            {purchases && purchases.length > 0 ? (
+              purchases.map((purchase, idx) => (
+                <tr key={idx} className="border-b last:border-0">
+                  <td className="px-4 py-2 font-medium text-gray-900">{purchase.id}</td>
+                  <td className="px-4 py-2">{purchase.supplier}</td>
+                  <td className="px-4 py-2">{purchase.date}</td>
+                  <td className={`px-4 py-2 ${
+                    purchase.status === 'PENDING' ? 'text-orange-600' : 
+                    purchase.status === 'RECEIVED' || purchase.status === 'DELIVERED' ? 'text-emerald-700' : 
+                    'text-gray-600'
+                  }`}>
+                    {purchase.status}
+                  </td>
+                  <td className="px-4 py-2 text-right">${purchase.total.toLocaleString()}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="px-4 py-2 text-center text-gray-500">
+                  No recent purchases found
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
-      <div className="text-xs text-gray-400 mt-2">(Replace with backend data)</div>
     </Card>
   );
 }; 

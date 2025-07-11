@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
+import axios from 'axios';
+import { getStoredAuth } from '../../utils/auth';
 
 interface ProductionOrder {
   id: string;
@@ -11,43 +13,53 @@ interface ProductionOrder {
   createdAt: string; // ISO string
 }
 
-// TODO: Replace this dummy data with a backend API call to /api/production-orders
-const dummyProductionOrders: ProductionOrder[] = [
-  {
-    id: '1',
-    variantId: '101',
-    quantity: 500,
-    status: 'CREATED',
-    startDate: '2024-01-10',
-    endDate: null,
-    createdAt: '2024-01-09T10:00:00Z',
-  },
-  {
-    id: '2',
-    variantId: '102',
-    quantity: 300,
-    status: 'IN_PROGRESS',
-    startDate: '2024-01-08',
-    endDate: null,
-    createdAt: '2024-01-07T09:00:00Z',
-  },
-  {
-    id: '3',
-    variantId: '103',
-    quantity: 200,
-    status: 'COMPLETED',
-    startDate: '2024-01-01',
-    endDate: '2024-01-05',
-    createdAt: '2023-12-31T08:00:00Z',
-  },
-];
-
 export const ProductionOrderList: React.FC = () => {
-  // TODO: Fetch production orders from backend here
-  // useEffect(() => { fetch('/api/production-orders') ... }, []);
-  const productionOrders = dummyProductionOrders;
-  const loading = false;
-  const error = null;
+  const [productionOrders, setProductionOrders] = useState<ProductionOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProductionOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/api/production-orders", {
+          headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+        });
+        
+        const orders: ProductionOrder[] = response.data;
+        setProductionOrders(orders);
+      } catch (error) {
+        console.error('Error fetching production orders:', error);
+        setError('Failed to load production orders');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductionOrders();
+  }, []);
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return '-';
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  const formatDateTime = (dateTimeString: string) => {
+    return new Date(dateTimeString).toLocaleString();
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'CREATED':
+        return 'text-blue-600 bg-blue-100';
+      case 'IN_PROGRESS':
+        return 'text-orange-600 bg-orange-100';
+      case 'COMPLETED':
+        return 'text-green-600 bg-green-100';
+      default:
+        return 'text-gray-600 bg-gray-100';
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -79,10 +91,14 @@ export const ProductionOrderList: React.FC = () => {
                   <tr key={order.id} className="border-b hover:bg-emerald-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-gray-900">{order.variantId}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-700">{order.quantity}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{order.status}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{order.startDate}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{order.endDate ? order.endDate : '-'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">{new Date(order.createdAt).toLocaleString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{formatDate(order.startDate)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{formatDate(order.endDate)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">{formatDateTime(order.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>

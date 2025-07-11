@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { ActiveProductionJobs } from './ActiveProductionJobs';
 import { RawMaterialsConsumption } from './RawMaterialsConsumption';
 import { FinishedGoods } from './FinishedGoods';

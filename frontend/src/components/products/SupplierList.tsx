@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../common/Card';
 
 interface Supplier {
@@ -9,37 +9,39 @@ interface Supplier {
   address: string;
 }
 
-// TODO: Replace this dummy data with a backend API call to /api/suppliers
-const dummySuppliers: Supplier[] = [
-  {
-    id: '1',
-    name: 'Textile Suppliers Ltd.',
-    email: 'contact@textilesuppliers.com',
-    phone: '+880123456789',
-    address: '123 Main Street, Dhaka',
-  },
-  {
-    id: '2',
-    name: 'Button World',
-    email: 'info@buttonworld.com',
-    phone: '+880987654321',
-    address: '456 Button Avenue, Chittagong',
-  },
-  {
-    id: '3',
-    name: 'Thread & Yarn Co.',
-    email: 'sales@threadyarn.com',
-    phone: '+880112233445',
-    address: '789 Yarn Road, Khulna',
-  },
-];
-
 export const SupplierList: React.FC = () => {
-  // TODO: Fetch suppliers from backend here
-  // useEffect(() => { fetch('/api/suppliers') ... }, []);
-  const suppliers = dummySuppliers;
-  const loading = false;
-  const error = null;
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch('/api/suppliers', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch suppliers');
+        }
+
+        const data = await response.json();
+        setSuppliers(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSuppliers();
+  }, []);
 
   return (
     <div className="space-y-6">

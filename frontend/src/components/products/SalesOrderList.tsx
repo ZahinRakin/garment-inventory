@@ -1,49 +1,67 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
+import axios from 'axios';
+import { getStoredAuth } from '../../utils/auth';
 
 interface SalesOrder {
   id: string;
   customerName: string;
   status: string;
   orderDate: string; // ISO string
-  totalAmount: string;
+  totalAmount: number;
   createdAt: string; // ISO string
 }
 
-// TODO: Replace this dummy data with a backend API call to /api/sales-orders
-const dummySalesOrders: SalesOrder[] = [
-  {
-    id: '1',
-    customerName: 'John Doe',
-    status: 'PENDING',
-    orderDate: '2024-01-15',
-    totalAmount: '12000.00',
-    createdAt: '2024-01-15T10:00:00Z',
-  },
-  {
-    id: '2',
-    customerName: 'Jane Smith',
-    status: 'DELIVERED',
-    orderDate: '2024-01-10',
-    totalAmount: '8000.00',
-    createdAt: '2024-01-10T09:00:00Z',
-  },
-  {
-    id: '3',
-    customerName: 'Acme Corp.',
-    status: 'CANCELLED',
-    orderDate: '2024-01-05',
-    totalAmount: '0.00',
-    createdAt: '2024-01-05T08:00:00Z',
-  },
-];
-
 export const SalesOrderList: React.FC = () => {
-  // TODO: Fetch sales orders from backend here
-  // useEffect(() => { fetch('/api/sales-orders') ... }, []);
-  const salesOrders = dummySalesOrders;
-  const loading = false;
-  const error = null;
+  const [salesOrders, setSalesOrders] = useState<SalesOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSalesOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/api/sales/orders", {
+          headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+        });
+        
+        const ordersData: SalesOrder[] = response.data;
+        setSalesOrders(ordersData);
+      } catch (error) {
+        console.error('Error fetching sales orders:', error);
+        setError('Failed to load sales orders');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSalesOrders();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  const formatDateTime = (dateTimeString: string) => {
+    return new Date(dateTimeString).toLocaleString();
+  };
+
+  const formatCurrency = (amount: number) => {
+    return `৳ ${amount.toLocaleString()}`;
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'text-orange-600 bg-orange-100';
+      case 'DELIVERED':
+        return 'text-green-600 bg-green-100';
+      case 'CANCELLED':
+        return 'text-red-600 bg-red-100';
+      default:
+        return 'text-gray-600 bg-gray-100';
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -73,10 +91,14 @@ export const SalesOrderList: React.FC = () => {
                 {salesOrders.map(order => (
                   <tr key={order.id} className="border-b hover:bg-emerald-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-gray-900">{order.customerName}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{order.status}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{order.orderDate}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{order.totalAmount}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">{new Date(order.createdAt).toLocaleString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{formatDate(order.orderDate)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{formatCurrency(order.totalAmount)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">{formatDateTime(order.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>

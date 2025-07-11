@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
+import axios from 'axios';
+import { getStoredAuth } from '../../utils/auth';
 
 interface Product {
   id: string;
@@ -8,31 +10,31 @@ interface Product {
   description: string;
 }
 
-const dummyProducts: Product[] = [
-  {
-    id: '1',
-    name: 'Cotton Shirt',
-    category: 'Apparel',
-    description: 'A comfortable cotton shirt.'
-  },
-  {
-    id: '2',
-    name: 'Denim Jeans',
-    category: 'Apparel',
-    description: 'Classic blue denim jeans.'
-  },
-  {
-    id: '3',
-    name: 'Silk Scarf',
-    category: 'Accessories',
-    description: 'Elegant silk scarf in various colors.'
-  }
-];
-
 export const ProductList: React.FC = () => {
-  const products = dummyProducts;
-  const loading = false;
-  const error = null;
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/api/products", {
+          headers: { Authorization: `Bearer ${getStoredAuth().token}` }
+        });
+        
+        const productsData: Product[] = response.data;
+        setProducts(productsData);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setError('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <div className="space-y-6">
