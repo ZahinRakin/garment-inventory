@@ -1,14 +1,15 @@
 import React from 'react';
-import { 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  Factory, 
-  Warehouse, 
-  TrendingUp, 
+import {
+  Package,
+  ShoppingCart,
+  Users,
+  Factory,
+  Warehouse,
+  TrendingUp,
   BarChart3,
   Settings,
-  Home
+  Home,
+  Lock
 } from 'lucide-react';
 import type { User } from '../../types';
 import { hasPermission } from '../../utils/auth';
@@ -22,70 +23,116 @@ interface NavItem {
   label: string;
   href: string;
   roles: string[];
+  readOnly?: boolean;
 }
 
 const navItems: NavItem[] = [
   {
     icon: <Home className="w-5 h-5" />,
     label: 'Dashboard',
-    href: '#dashboard',
+    href: '/',
     roles: ['ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER', 'SALES_OFFICER']
   },
   {
     icon: <Package className="w-5 h-5" />,
-    label: 'Products',
-    href: '#products',
-    roles: ['ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER']
+    label: 'Products & Variants',
+    href: '/products',
+    roles: ['ADMIN'],
   },
   {
     icon: <Warehouse className="w-5 h-5" />,
     label: 'Raw Materials',
-    href: '#raw-materials',
-    roles: ['ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER']
+    href: '/raw-materials',
+    roles: ['ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER'],
+    readOnly: false
   },
   {
     icon: <Users className="w-5 h-5" />,
-    label: 'Suppliers',
-    href: '#suppliers',
+    label: 'Suppliers & Purchases',
+    href: '/suppliers',
     roles: ['ADMIN', 'STORE_MANAGER']
   },
   {
     icon: <Factory className="w-5 h-5" />,
-    label: 'Production',
-    href: '#production',
+    label: 'Production Orders',
+    href: '/production-orders',
     roles: ['ADMIN', 'PRODUCTION_OFFICER']
   },
   {
     icon: <ShoppingCart className="w-5 h-5" />,
-    label: 'Sales',
-    href: '#sales',
-    roles: ['ADMIN', 'SALES_OFFICER', 'STORE_MANAGER']
+    label: 'Sales Orders',
+    href: '/sales-orders',
+    roles: ['ADMIN', 'SALES_OFFICER']
   },
   {
     icon: <TrendingUp className="w-5 h-5" />,
     label: 'Stock Management',
-    href: '#stock',
+    href: '/stock',
     roles: ['ADMIN', 'STORE_MANAGER']
   },
   {
     icon: <BarChart3 className="w-5 h-5" />,
     label: 'Reports',
-    href: '#reports',
-    roles: ['ADMIN', 'STORE_MANAGER']
+    href: '/reports',
+    roles: ['ADMIN'],
+  },
+  {
+    icon: <BarChart3 className="w-5 h-5" />,
+    label: 'Reports (Inventory)',
+    href: '/reports/inventory',
+    roles: ['STORE_MANAGER']
+  },
+  {
+    icon: <BarChart3 className="w-5 h-5" />,
+    label: 'Reports (Production)',
+    href: '/reports/production',
+    roles: ['PRODUCTION_OFFICER']
+  },
+  {
+    icon: <BarChart3 className="w-5 h-5" />,
+    label: 'Reports (Sales)',
+    href: '/reports/sales',
+    roles: ['SALES_OFFICER']
+  },
+  {
+    icon: <Package className="w-5 h-5" />,
+    label: 'Product Variants',
+    href: '/products',
+    roles: ['PRODUCTION_OFFICER'],
+    readOnly: true
+  },
+  {
+    icon: <Package className="w-5 h-5" />,
+    label: 'Products',
+    href: '/products',
+    roles: ['SALES_OFFICER'],
+    readOnly: true
+  },
+  {
+    icon: <Warehouse className="w-5 h-5" />,
+    label: 'Raw Materials',
+    href: '/raw-materials',
+    roles: ['PRODUCTION_OFFICER'],
+    readOnly: true
   },
   {
     icon: <Settings className="w-5 h-5" />,
-    label: 'Settings',
-    href: '#settings',
-    roles: ['ADMIN']
-  }
+    label: 'User Management',
+    href: '/users',
+    roles: ['ADMIN'],
+  },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
-  const [activeItem, setActiveItem] = React.useState('#dashboard');
+  const [activeItem, setActiveItem] = React.useState('/');
 
-  const filteredNavItems = navItems.filter(item => 
-    hasPermission(user, item.roles)
+  // Remove duplicates by label+href, keep the first match
+  const uniqueNavItems = navItems.filter((item, idx, arr) =>
+    arr.findIndex(i => i.label === item.label && i.href === item.href) === idx
+  );
+
+  const filteredNavItems = uniqueNavItems.filter(item =>
+    user && item.roles.includes(user.role)
   );
 
   return (
@@ -98,21 +145,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
           <span className="text-xl font-bold text-white">GIS</span>
         </div>
       </div>
-      
       <nav className="mt-8">
         <div className="px-4 space-y-2">
           {filteredNavItems.map((item) => (
             <button
-              key={item.href}
+              key={item.href + item.label}
               onClick={() => setActiveItem(item.href)}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                 activeItem === item.href
                   ? 'bg-emerald-600 text-white'
                   : 'text-gray-300 hover:bg-slate-700 hover:text-white'
-              }`}
+              } ${item.readOnly ? 'opacity-60 cursor-not-allowed' : ''}`}
+              disabled={!!item.readOnly}
             >
               {item.icon}
               <span className="font-medium">{item.label}</span>
+              {item.readOnly && <Lock className="w-4 h-4 ml-2 text-gray-400" />}
             </button>
           ))}
         </div>
