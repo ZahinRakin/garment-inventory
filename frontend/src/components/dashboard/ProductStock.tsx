@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface Variant {
   id: string;
@@ -23,11 +22,7 @@ export const ProductStock: React.FC = () => {
     const fetchLowStockVariants = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/products/variants/low-stock", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const response = await api.get("/api/products/variants/low-stock");
         console.log('Low stock variants response:', response.data);
         
         // Ensure response.data is an array

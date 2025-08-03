@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface TopItem {
   id: string;
@@ -43,24 +42,16 @@ export const TopSellingProducts: React.FC = () => {
         
         // Fetch top selling products, all products, and all variants in parallel
         const [topProductsResponse, productsResponse, variantsResponse] = await Promise.all([
-          axios.get("/api/reports/sales/top-products?limit=5", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/products", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/products", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }).then(async (productsRes) => {
+          api.get("/api/reports/sales/top-products?limit=5"),
+          api.get("/api/products"),
+          api.get("/api/products").then(async (productsRes) => {
             // For each product, get its variants
             const products: Product[] = productsRes.data;
             const allVariants: Variant[] = [];
             
             for (const product of products) {
               try {
-                const variantsRes = await axios.get(`/api/products/${product.id}/variants`, {
-                  headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-                });
+                const variantsRes = await api.get(`/api/products/${product.id}/variants`);
                 allVariants.push(...variantsRes.data);
               } catch (error) {
                 console.warn(`Failed to fetch variants for product ${product.id}:`, error);

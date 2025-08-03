@@ -6,8 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
 import { AlertTriangle } from 'lucide-react';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 // const dummyOverduePOs = [
 //   { id: 'PO-2024-003', supplier: 'Textile Suppliers Ltd.', dueDate: '2024-01-10' },
@@ -42,11 +41,7 @@ export const Alerts: React.FC = () => {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const response = await axios.get("/api/reports/low-stock", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const response = await api.get("/api/reports/low-stock");
         console.log(response.data); // debugging log
         setLowStockItems(response.data);
       } catch (error) {

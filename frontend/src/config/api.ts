@@ -13,9 +13,15 @@ export const api = axios.create({
 // Add request interceptor to include auth token
 api.interceptors.request.use(
   (config) => {
-    const auth = getStoredAuth();
-    if (auth?.token) {
-      config.headers.Authorization = `Bearer ${auth.token}`;
+    // Skip auth header for public endpoints
+    const publicEndpoints = ['/api/register', '/api/login'];
+    const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint));
+    
+    if (!isPublicEndpoint) {
+      const auth = getStoredAuth();
+      if (auth?.token) {
+        config.headers.Authorization = `Bearer ${auth.token}`;
+      }
     }
     return config;
   },

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface Purchase {
   id: string;
@@ -40,12 +39,8 @@ export const RecentPurchases: React.FC = () => {
         
         // Fetch purchases and suppliers in parallel
         const [purchasesResponse, suppliersResponse] = await Promise.all([
-          axios.get("/api/purchases", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/suppliers", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          })
+          api.get("/api/purchases"),
+          api.get("/api/suppliers")
         ]);
 
         const purchaseData: Purchase[] = Array.isArray(purchasesResponse.data) ? purchasesResponse.data : [];

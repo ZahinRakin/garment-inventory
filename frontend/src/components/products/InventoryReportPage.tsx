@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 // --- Types based on backend DTOs ---
 interface StockSummaryReport {
@@ -37,12 +36,8 @@ export const InventoryReportPage: React.FC = () => {
         
         // Fetch stock summary and low stock items in parallel
         const [stockSummaryResponse, lowStockResponse] = await Promise.all([
-          axios.get("/api/reports/stock-summary", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/reports/low-stock", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          })
+          api.get("/api/reports/stock-summary"),
+          api.get("/api/reports/low-stock")
         ]);
 
         const summaryData: StockSummaryReport = stockSummaryResponse.data;

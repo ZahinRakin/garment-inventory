@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface PurchaseItem {
   id: string;
@@ -47,18 +46,10 @@ export const PurchaseSummary: React.FC = () => {
         setLoading(true);
         
         // Fetch all purchases
-        const purchasesResponse = await axios.get("/api/purchases", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const purchasesResponse = await api.get("/api/purchases");
         
         // Fetch all suppliers to get supplier names
-        const suppliersResponse = await axios.get("/api/suppliers", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const suppliersResponse = await api.get("/api/suppliers");
 
         const purchases: Purchase[] = purchasesResponse.data;
         const suppliers: Supplier[] = suppliersResponse.data;

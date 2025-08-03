@@ -4,9 +4,9 @@
 // api endpoint   /api/register------------------------------------//
 //-----------------------------------------------------------------//
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
-import axios from "axios";
+import { api } from '../../config/api';
 
 
 import { Button } from '../common/Button';
@@ -28,6 +28,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  // Clear any potentially corrupted auth data on component mount
+  useEffect(() => {
+    localStorage.removeItem('garment_inventory_auth');
+  }, []);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -72,35 +77,31 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/register", {
+      const response = await api.post("/api/register", {
         firstName,
         lastName,
         email,
-        password
+        password,
+        role
       });
       const user = response.data.user;
       const accessToken = response.data.accessToken;
 
       onRegister(user, accessToken);
       setLoading(false);
-
-      
-    } catch (error) {
-      console.error(error);      
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      if (error.response?.status === 409) {
+        setErrors({ general: 'User already exists. Please try logging in instead.' });
+      } else if (error.response?.status === 403) {
+        setErrors({ general: 'Access forbidden. Please clear your browser cache and try again.' });
+      } else if (error.response?.status >= 500) {
+        setErrors({ general: 'Server error. Please try again later.' });
+      } else {
+        setErrors({ general: 'Registration failed. Please try again.' });
+      }
+      setLoading(false);
     }
-
-    // setTimeout(() => {
-    //   const mockUser: User = {
-    //     id: Date.now().toString(),
-    //     email,
-    //     firstName: firstName.trim(),
-    //     lastName: lastName.trim(),
-    //     role,
-    //   };
-
-    //   onRegister(mockUser, 'mock-jwt-token');
-    //   setLoading(false);
-    // }, 1000);
   };
 
   if(loading){
@@ -230,6 +231,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
               {errors.confirmPassword && <p className="mt-1 text-sm text-red-400">{errors.confirmPassword}</p>}
             </div>
           </div>
+
+          {/* General Error Display */}
+          {errors.general && (
+            <div className="rounded-md bg-red-900 border border-red-700 p-3">
+              <p className="text-sm text-red-200">{errors.general}</p>
+            </div>
+          )}
 
           {/* Submit */}
           <div>

@@ -24,9 +24,27 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public User save(User user) {
-        UserEntity entity = UserEntity.fromDomain(user);
+        UserEntity entity;
+        
+        // For new users during registration, create entity without setting ID
+        // This allows Hibernate to generate a new ID automatically
+        if (!jpaRepository.existsByEmail(user.getEmail())) {
+            // New user - let Hibernate generate ID
+            entity = new UserEntity(user, true); // true = isNewEntity, don't set ID
+        } else {
+            // Existing user - preserve the ID for updates
+            entity = new UserEntity(user, false); // false = existing entity
+        }
+        
         UserEntity savedEntity = jpaRepository.save(entity);
-        return savedEntity.toDomain();
+        User savedUser = savedEntity.toDomain();
+        
+        // For new users, update the domain object with the generated ID
+        if (savedEntity.getId() != null && !savedEntity.getId().equals(user.getId())) {
+            user.setId(savedEntity.getId());
+        }
+        
+        return savedUser;
     }
 
     @Override

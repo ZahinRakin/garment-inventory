@@ -11,12 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class AuthController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final AuthService authService;
 
     @Autowired
@@ -50,7 +53,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register(@RequestBody RegisterRequestDto registerRequest) {
+        logger.info("🚀 Registration Request - Starting registration for email: {}", registerRequest.getEmail());
+        logger.debug("📋 Registration Request - Details: firstName={}, lastName={}, role={}", 
+            registerRequest.getFirstName(), registerRequest.getLastName(), registerRequest.getRole());
+        
         try {
+            logger.info("👤 Registration - Attempting to register user: {}", registerRequest.getEmail());
             User user = authService.registerUser(
                 registerRequest.getFirstName(),
                 registerRequest.getLastName(),
@@ -58,8 +66,11 @@ public class AuthController {
                 registerRequest.getPassword(),
                 registerRequest.getRole()
             );
+            logger.info("✅ Registration - User registered successfully: {} with ID: {}", user.getEmail(), user.getId());
             
+            logger.info("🔑 Registration - Attempting to generate token for: {}", registerRequest.getEmail());
             String token = authService.loginUser(registerRequest.getEmail(), registerRequest.getPassword());
+            logger.info("✅ Registration - Token generated successfully for: {}", registerRequest.getEmail());
             
             AuthResponseDto response = new AuthResponseDto();
             response.setAccessToken(token);
@@ -73,9 +84,14 @@ public class AuthController {
             
             response.setUser(userDto);
             
+            logger.info("🎉 Registration - Complete success for user: {}", user.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (UserAlreadyExistsException e) {
+            logger.warn("⚠️ Registration - User already exists: {}", registerRequest.getEmail());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (Exception e) {
+            logger.error("💥 Registration - Unexpected error for user: {} - Error: {}", registerRequest.getEmail(), e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

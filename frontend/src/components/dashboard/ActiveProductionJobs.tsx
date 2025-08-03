@@ -5,8 +5,7 @@
 //----------------------------------------------------------------------------------//
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 export const ActiveProductionJobs: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([
@@ -27,11 +26,7 @@ export const ActiveProductionJobs: React.FC = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get("/api/production-orders/status/IN_PROGRESS", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const response = await api.get("/api/production-orders/status/IN_PROGRESS");
         console.log(response.data); // debugging log
         setJobs(response.data);
       } catch (error) {

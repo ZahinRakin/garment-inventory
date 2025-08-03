@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface RawMaterial {
   id: string;
@@ -30,11 +29,7 @@ export const RawMaterialsStock: React.FC = () => {
           return;
         }
         
-        const response = await axios.get("/api/raw-materials", {
-          headers: {
-            Authorization: `Bearer ${auth.token}`
-          }
-        });
+        const response = await api.get("/api/raw-materials");
         console.log('Raw materials stock response:', response.data);
         
         // Ensure response.data is an array

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface Product {
   id: string;
@@ -19,9 +18,7 @@ export const ProductList: React.FC = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/products", {
-          headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-        });
+        const response = await api.get("/api/products");
         
         const productsData: Product[] = response.data;
         setProducts(productsData);

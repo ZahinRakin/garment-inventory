@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 // --- Types based on production report needs ---
 interface ProductionSummary {
@@ -72,15 +71,9 @@ export const ProductionReportPage: React.FC = () => {
         
         // Fetch production data from multiple endpoints
         const [statusResponse, ordersResponse, productsResponse] = await Promise.all([
-          axios.get("/api/reports/production/status", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/production-orders", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/products", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          })
+          api.get("/api/reports/production/status"),
+          api.get("/api/production-orders"),
+          api.get("/api/products")
         ]);
 
         const statusData: StatusCount[] = statusResponse.data;

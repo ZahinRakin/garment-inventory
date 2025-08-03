@@ -51,6 +51,22 @@ public class UserEntity {
         this.updatedAt = user.getUpdatedAt();
     }
 
+    // Constructor for new entities (without ID)
+    public UserEntity(User user, boolean isNewEntity) {
+        if (!isNewEntity) {
+            this.id = user.getId();
+        }
+        // Don't set ID for new entities, let Hibernate generate it
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.role = user.getRole();
+        this.enabled = user.isEnabled();
+        this.createdAt = user.getCreatedAt();
+        this.updatedAt = user.getUpdatedAt();
+    }
+
     public User toDomain() {
         User user = new User();
         user.setId(this.id);

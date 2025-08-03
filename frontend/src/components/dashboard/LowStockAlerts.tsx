@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
 import { AlertTriangle } from 'lucide-react';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface StockAlert {
   message: string;
@@ -21,11 +20,7 @@ export const LowStockAlerts: React.FC = () => {
     const fetchLowStock = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/stock/alerts", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const response = await api.get("/api/stock/alerts");
         
         // Ensure response.data is an array
         if (Array.isArray(response.data)) {

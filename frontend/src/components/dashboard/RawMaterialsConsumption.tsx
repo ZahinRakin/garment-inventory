@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface RawMaterial {
   id: string;
@@ -29,11 +28,7 @@ export const RawMaterialsConsumption: React.FC = () => {
     const fetchRawMaterials = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/raw-materials", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const response = await api.get("/api/raw-materials");
         console.log('Raw materials response:', response.data);
         
         // Transform the data to match the component's needs

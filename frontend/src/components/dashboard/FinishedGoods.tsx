@@ -6,8 +6,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface Variant {
   id: string;
@@ -37,11 +36,7 @@ export const FinishedGoods: React.FC = () => {
     const fetchFinishedGoods = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/reports/finished-goods-stock", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const response = await api.get("/api/reports/finished-goods-stock");
         console.log('Finished goods response:', response.data);
         setFinishedGoods(response.data);
       } catch (error) {

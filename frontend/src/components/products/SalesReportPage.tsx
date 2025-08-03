@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 // --- Types based on backend DTOs ---
 interface SalesReport {
@@ -47,12 +46,8 @@ export const SalesReportPage: React.FC = () => {
 
         // Fetch sales data from multiple endpoints in parallel
         const [revenueResponse, topProductsResponse] = await Promise.all([
-          axios.get(`/api/reports/sales/revenue?startDate=${startDate}&endDate=${endDate}`, {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/reports/sales/top-products?limit=5", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          })
+          api.get(`/api/reports/sales/revenue?startDate=${startDate}&endDate=${endDate}`),
+          api.get("/api/reports/sales/top-products?limit=5")
         ]);
 
         const revenueData: RevenueData = revenueResponse.data;

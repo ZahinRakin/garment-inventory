@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
 import { formatCurrency } from '../../utils/format';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface RevenueData {
   totalRevenue: number;
@@ -43,12 +42,8 @@ export const RevenueSummary: React.FC = () => {
 
         // Fetch revenue data for current month and previous month in parallel
         const [currentMonthResponse, previousMonthResponse] = await Promise.all([
-          axios.get(`/api/reports/sales/revenue?startDate=${startDate}&endDate=${endDate}`, {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get(`/api/reports/sales/revenue?startDate=${prevStartDate}&endDate=${prevEndDate}`, {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          })
+          api.get(`/api/reports/sales/revenue?startDate=${startDate}&endDate=${endDate}`),
+          api.get(`/api/reports/sales/revenue?startDate=${prevStartDate}&endDate=${prevEndDate}`)
         ]);
 
         const currentMonthData: RevenueData = currentMonthResponse.data;

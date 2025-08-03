@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
 import { StatusBadge } from '../common/StatusBadge';
 import { formatDateTime } from '../../utils/format';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface SalesOrder {
   id: string;
@@ -69,21 +68,11 @@ export const RecentActivity: React.FC = () => {
         
         // Fetch all data in parallel
         const [salesResponse, productionResponse, purchasesResponse, stockAlertsResponse, suppliersResponse] = await Promise.all([
-          axios.get("/api/sales/orders", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/production-orders", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/purchases", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/stock/alerts", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          }),
-          axios.get("/api/suppliers", {
-            headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-          })
+          api.get("/api/sales/orders"),
+          api.get("/api/production-orders"),
+          api.get("/api/purchases"),
+          api.get("/api/stock/alerts"),
+          api.get("/api/suppliers")
         ]);
 
         const salesOrders: SalesOrder[] = salesResponse.data;

@@ -7,8 +7,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 export const CustomerOrders: React.FC = () => {
   const [orders, setOrders] = useState<any[]>([
@@ -38,11 +37,7 @@ export const CustomerOrders: React.FC = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("/api/sales/orders", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const response = await api.get("/api/sales/orders");
         console.log(response.data); //debugging log
         setOrders(response.data);
       } catch (error) {

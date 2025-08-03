@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface ProductionOrder {
   id: string;
@@ -22,9 +21,7 @@ export const ProductionOrderList: React.FC = () => {
     const fetchProductionOrders = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/production-orders", {
-          headers: { Authorization: `Bearer ${getStoredAuth().token}` }
-        });
+        const response = await api.get("/api/production-orders");
         
         const orders: ProductionOrder[] = response.data;
         setProductionOrders(orders);

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
 import { AlertTriangle } from 'lucide-react';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface LowStockItem {
   type: string; // "RAW_MATERIAL" or "VARIANT"
@@ -21,11 +20,7 @@ export const MissingMaterialsAlerts: React.FC = () => {
     const fetchMissingMaterials = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/reports/low-stock", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const response = await api.get("/api/reports/low-stock");
         setMissingMaterials(response.data);
       } catch (error) {
         setError('Failed to load missing materials alerts');

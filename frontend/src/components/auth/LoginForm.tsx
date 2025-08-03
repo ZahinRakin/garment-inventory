@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { Eye, EyeOff, Package } from 'lucide-react';
 import { Button } from '../common/Button';
 import type { User } from '../../types';
-import axios from "axios";
+import { api } from '../../config/api';
 import { LoadingAnimation } from '../common/LoadingAnimation';
 
 interface LoginFormProps {
@@ -29,7 +29,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
     setError(null);
 
     try {
-      const response = await axios.post("/api/login", {
+      const response = await api.post("/api/login", {
         email: email,
         password: password
       });
@@ -118,6 +118,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
               </button>
             </div>
           </div>
+
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+              <p className="text-red-400 text-sm text-center">{error}</p>
+            </div>
+          )}
 
           <div>
             <Button

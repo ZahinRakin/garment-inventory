@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../common/Card';
-import axios from 'axios';
-import { getStoredAuth } from '../../utils/auth';
+import { api } from '../../config/api';
 
 interface SalesOrder {
   id: string;
@@ -30,11 +29,7 @@ export const PendingDeliveredOrders: React.FC = () => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/sales/orders", {
-          headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
-          }
-        });
+        const response = await api.get("/api/sales/orders");
         
         const orders: SalesOrder[] = response.data;
         
