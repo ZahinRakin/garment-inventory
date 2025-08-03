@@ -29,10 +29,19 @@ export const ProductStock: React.FC = () => {
           }
         });
         console.log('Low stock variants response:', response.data);
-        setVariants(response.data);
+        
+        // Ensure response.data is an array
+        if (Array.isArray(response.data)) {
+          setVariants(response.data);
+        } else {
+          console.error('Expected array but got:', typeof response.data);
+          setVariants([]);
+          setError('Invalid data format received from server');
+        }
       } catch (error) {
         console.error('Error fetching low stock variants:', error);
         setError('Failed to load product stock data');
+        setVariants([]);
       } finally {
         setLoading(false);
       }

@@ -26,9 +26,19 @@ export const LowStockAlerts: React.FC = () => {
             Authorization: `Bearer ${getStoredAuth().token}`
           }
         });
-        setLowStock(response.data);
+        
+        // Ensure response.data is an array
+        if (Array.isArray(response.data)) {
+          setLowStock(response.data);
+        } else {
+          console.error('Expected array but got:', typeof response.data);
+          setLowStock([]);
+          setError('Invalid data format received from server');
+        }
       } catch (error) {
+        console.error('Error fetching low stock alerts:', error);
         setError('Failed to load low stock alerts');
+        setLowStock([]);
       } finally {
         setLoading(false);
       }

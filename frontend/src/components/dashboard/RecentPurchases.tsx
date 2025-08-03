@@ -48,8 +48,8 @@ export const RecentPurchases: React.FC = () => {
           })
         ]);
 
-        const purchaseData: Purchase[] = purchasesResponse.data;
-        const suppliers: Supplier[] = suppliersResponse.data;
+        const purchaseData: Purchase[] = Array.isArray(purchasesResponse.data) ? purchasesResponse.data : [];
+        const suppliers: Supplier[] = Array.isArray(suppliersResponse.data) ? suppliersResponse.data : [];
 
         // Create supplier map
         const supplierMap = new Map<string, string>();
@@ -73,6 +73,7 @@ export const RecentPurchases: React.FC = () => {
       } catch (error) {
         console.error('Error fetching recent purchases:', error);
         setError('Failed to load recent purchases data');
+        setPurchases([]);
       } finally {
         setLoading(false);
       }

@@ -6,10 +6,16 @@ const getStoredAuth = (): AuthState => {
   try {
     const stored = localStorage.getItem(AUTH_STORAGE_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      const parsedAuth = JSON.parse(stored);
+      // Validate that the stored auth has all required properties and is still valid
+      if (parsedAuth.user && parsedAuth.token && parsedAuth.isAuthenticated) {
+        return parsedAuth;
+      }
     }
   } catch (error) {
     console.error('Error parsing stored auth:', error);
+    // Clear invalid auth data
+    localStorage.removeItem(AUTH_STORAGE_KEY);
   }
   
   return {

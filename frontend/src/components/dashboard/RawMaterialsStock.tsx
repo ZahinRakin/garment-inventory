@@ -22,16 +22,39 @@ export const RawMaterialsStock: React.FC = () => {
     const fetchRawMaterials = async () => {
       try {
         setLoading(true);
+        const auth = getStoredAuth();
+        console.log('Auth state:', auth);
+        
+        if (!auth.isAuthenticated || !auth.token) {
+          setError('Please log in to access this data');
+          return;
+        }
+        
         const response = await axios.get("/api/raw-materials", {
           headers: {
-            Authorization: `Bearer ${getStoredAuth().token}`
+            Authorization: `Bearer ${auth.token}`
           }
         });
         console.log('Raw materials stock response:', response.data);
-        setRawMaterials(response.data);
-      } catch (error) {
+        
+        // Ensure response.data is an array
+        if (Array.isArray(response.data)) {
+          setRawMaterials(response.data);
+        } else {
+          console.error('Expected array but got:', typeof response.data);
+          setRawMaterials([]);
+          setError('Invalid data format received from server');
+        }
+      } catch (error: any) {
         console.error('Error fetching raw materials stock:', error);
-        setError('Failed to load raw materials stock data');
+        if (error.response?.status === 403) {
+          setError('Access denied. Please check your permissions.');
+        } else if (error.response?.status === 401) {
+          setError('Authentication required. Please log in again.');
+        } else {
+          setError('Failed to load raw materials stock data');
+        }
+        setRawMaterials([]);
       } finally {
         setLoading(false);
       }

@@ -21,10 +21,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       const response = await axios.post("/api/login", {
@@ -33,29 +35,23 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
       });
       
       const accessToken = response.data.accessToken;
-      const user = response.data.user; // I might neet to morf this user into User data type that is declared inside types/index.ts
+      const user = response.data.user;
       
-      if(response.status == 200){
+      if(response.status === 200){
         onLogin(user, accessToken);
       }
       setLoading(false);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error('Login error:', error);
+      if (error.response?.status === 401) {
+        setError('Invalid email or password. Please try again.');
+      } else if (error.response?.status >= 500) {
+        setError('Server error. Please try again later.');
+      } else {
+        setError('Login failed. Please check your credentials and try again.');
+      }
+      setLoading(false);
     }
-
-    // // Mock authentication - replace with actual API call
-    // setTimeout(() => {
-    //   const mockUser: User = {
-    //     id: '1',
-    //     email: email,
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     role: 'STORE_MANAGER' // Change this to 'ADMIN', 'STORE_MANAGER', 'PRODUCTION_OFFICER', or 'SALES_OFFICER'
-    //   };
-      
-      //onLogin(mockUser, "mock_access_token")
-      // setLoading(false);
-    // }, 1000);
   };
 
   if(loading){
