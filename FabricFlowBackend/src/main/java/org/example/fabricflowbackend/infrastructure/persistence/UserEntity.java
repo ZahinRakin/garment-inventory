@@ -28,7 +28,7 @@ public class UserEntity {
     @Column(name = "role", nullable = false)
     private String role;
 
-    @Column(name = "enabled", nullable = false)
+    @Column(name = "active", nullable = false)  // Changed from "enabled" to "active" to match database
     private boolean enabled;
 
     @Column(name = "created_at", nullable = false)

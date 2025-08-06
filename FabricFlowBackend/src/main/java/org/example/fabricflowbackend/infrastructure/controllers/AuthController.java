@@ -30,11 +30,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginRequestDto loginRequest) {
         try {
-            String token = authService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
-            User user = authService.getCurrentUser(token);
+            logger.info("🔐 Login attempt for email: {}", loginRequest.getEmail());
+            
+            // Simple login without JWT - just verify user exists and password matches
+            User user = authService.simpleLogin(loginRequest.getEmail(), loginRequest.getPassword());
             
             AuthResponseDto response = new AuthResponseDto();
-            response.setAccessToken(token);
+            response.setAccessToken("no-token-needed"); // Dummy token for frontend compatibility
             
             AuthResponseDto.UserDto userDto = new AuthResponseDto.UserDto();
             userDto.setId(user.getId());
@@ -45,8 +47,10 @@ public class AuthController {
             
             response.setUser(userDto);
             
+            logger.info("✅ Login successful for user: {}", user.getEmail());
             return ResponseEntity.ok(response);
         } catch (InvalidCredentialsException e) {
+            logger.warn("❌ Invalid credentials for email: {}", loginRequest.getEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
@@ -68,12 +72,9 @@ public class AuthController {
             );
             logger.info("✅ Registration - User registered successfully: {} with ID: {}", user.getEmail(), user.getId());
             
-            logger.info("🔑 Registration - Attempting to generate token for: {}", registerRequest.getEmail());
-            String token = authService.loginUser(registerRequest.getEmail(), registerRequest.getPassword());
-            logger.info("✅ Registration - Token generated successfully for: {}", registerRequest.getEmail());
-            
+            // No JWT token needed anymore - just return user info
             AuthResponseDto response = new AuthResponseDto();
-            response.setAccessToken(token);
+            response.setAccessToken("no-token-needed"); // Dummy token for frontend compatibility
             
             AuthResponseDto.UserDto userDto = new AuthResponseDto.UserDto();
             userDto.setId(user.getId());

@@ -14,7 +14,7 @@ import type { User } from '../../types';
 import { LoadingAnimation } from '../common/LoadingAnimation';
 
 interface RegistrationFormProps {
-  onRegister: (user: User, token: string) => void;
+  onRegister: (user: User) => void; // Remove token parameter
 }
 
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
@@ -85,9 +85,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
         role
       });
       const user = response.data.user;
-      const accessToken = response.data.accessToken;
+      // No token needed anymore!
 
-      onRegister(user, accessToken);
+      onRegister(user); // Just pass the user
       setLoading(false);
     } catch (error: any) {
       console.error('Registration error:', error);

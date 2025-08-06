@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getStoredAuth } from '../utils/auth';
 
 // Create axios instance with default config
 export const api = axios.create({
@@ -10,19 +9,11 @@ export const api = axios.create({
   },
 });
 
-// Add request interceptor to include auth token
+// Simplified interceptors - no authentication needed
 api.interceptors.request.use(
   (config) => {
-    // Skip auth header for public endpoints
-    const publicEndpoints = ['/api/register', '/api/login'];
-    const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint));
-    
-    if (!isPublicEndpoint) {
-      const auth = getStoredAuth();
-      if (auth?.token) {
-        config.headers.Authorization = `Bearer ${auth.token}`;
-      }
-    }
+    // No auth headers needed anymore!
+    console.log('🚀 API Request:', config.method?.toUpperCase(), config.url);
     return config;
   },
   (error) => {
@@ -30,17 +21,14 @@ api.interceptors.request.use(
   }
 );
 
-// Add response interceptor for error handling
+// Simplified response interceptor
 api.interceptors.response.use(
   (response) => {
+    console.log('✅ API Response:', response.status, response.config.url);
     return response;
   },
   (error) => {
-    if (error.response?.status === 401) {
-      // Handle unauthorized access
-      localStorage.removeItem('garment_inventory_auth');
-      window.location.href = '/login';
-    }
+    console.error('❌ API Error:', error.response?.status, error.config?.url, error.message);
     return Promise.reject(error);
   }
 );

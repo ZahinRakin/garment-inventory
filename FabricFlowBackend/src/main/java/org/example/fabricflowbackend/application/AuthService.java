@@ -22,13 +22,12 @@ public class AuthService implements AuthUseCase {
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-
+    
+    // Remove JWT dependency completely
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
     }
 
     @Override
@@ -59,9 +58,9 @@ public class AuthService implements AuthUseCase {
         return savedUser;
     }
 
-    @Override
-    public String loginUser(String email, String password) {
-        logger.info("🔐 AuthService - Login attempt for email: {}", email);
+    // Simple login without JWT tokens
+    public User simpleLogin(String email, String password) {
+        logger.info("🔐 AuthService - Simple login attempt for email: {}", email);
         
         logger.debug("🔍 AuthService - Looking up user in database: {}", email);
         User user = userRepository.findByEmail(email)
@@ -85,26 +84,27 @@ public class AuthService implements AuthUseCase {
         }
         logger.info("✅ AuthService - Account is enabled for user: {}", email);
 
-        logger.info("🎫 AuthService - Generating JWT token for user: {}", email);
-        String token = jwtService.generateToken(user);
-        logger.info("✅ AuthService - JWT token generated successfully for user: {}", email);
-        
-        return token;
+        logger.info("� AuthService - Simple login successful for user: {}", email);
+        return user;
+    }
+
+    @Override
+    public String loginUser(String email, String password) {
+        // This method still exists for compatibility but returns dummy token
+        simpleLogin(email, password);
+        return "no-token-needed";
     }
 
     @Override
     public User getCurrentUser(String token) {
-        String email = jwtService.extractEmail(token);
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(email));
+        // Since we don't use tokens anymore, this method is not practical
+        // But we keep it for interface compatibility
+        throw new RuntimeException("Token-based authentication is disabled. Use simpleLogin instead.");
     }
 
     @Override
     public boolean validateToken(String token) {
-        try {
-            return jwtService.validateToken(token);
-        } catch (Exception e) {
-            return false;
-        }
+        // No token validation needed
+        return true;
     }
 } 

@@ -12,7 +12,7 @@ import { api } from '../../config/api';
 import { LoadingAnimation } from '../common/LoadingAnimation';
 
 interface LoginFormProps {
-  onLogin: (user: User, token: string) => void;
+  onLogin: (user: User) => void; // Remove token parameter
   onRegister?: () => void;
 }
 
@@ -34,11 +34,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onRegister }) => 
         password: password
       });
       
-      const accessToken = response.data.accessToken;
+      // No token needed anymore!
       const user = response.data.user;
       
       if(response.status === 200){
-        onLogin(user, accessToken);
+        onLogin(user); // Just pass the user
       }
       setLoading(false);
     } catch (error: any) {
