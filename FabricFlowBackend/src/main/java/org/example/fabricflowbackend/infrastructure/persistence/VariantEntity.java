@@ -49,6 +49,9 @@ public class VariantEntity {
         VariantEntity entity = new VariantEntity();
         entity.setId(variant.getId());
         // Note: Product would need to be set separately
+        ProductEntity productEntity = new ProductEntity();
+        productEntity.setId(variant.getProductId());
+        entity.setProduct(productEntity);
         entity.setSize(variant.getSize());
         entity.setColor(variant.getColor());
         entity.setFabric(variant.getFabric());

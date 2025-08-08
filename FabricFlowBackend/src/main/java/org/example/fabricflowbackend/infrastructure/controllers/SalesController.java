@@ -1,6 +1,8 @@
 package org.example.fabricflowbackend.infrastructure.controllers;
 
 
+import jakarta.annotation.security.RolesAllowed;
+import org.example.fabricflowbackend.Domain.services.SalesUseCase;
 import org.example.fabricflowbackend.application.SalesService;
 import org.example.fabricflowbackend.Domain.entities.SalesItem;
 import org.example.fabricflowbackend.Domain.entities.SalesOrder;
@@ -10,6 +12,7 @@ import org.example.fabricflowbackend.application.dto.salesitem.SalesItemResponse
 import org.example.fabricflowbackend.application.dto.salesorder.SalesOrderRequestDTO;
 import org.example.fabricflowbackend.application.dto.salesorder.SalesOrderResponseDTO;
 import org.example.fabricflowbackend.application.dto.salesorder.StatusUpdateDTO;
+import org.example.fabricflowbackend.infrastructure.annotation.RoleAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +26,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/sales")
 public class SalesController {
 
-    private final SalesService salesService;
+    private final SalesUseCase salesService;
 
-    public SalesController(SalesService salesService) {
+    public SalesController(SalesUseCase salesService) {
         this.salesService = salesService;
     }
 
     @PostMapping("/orders")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<SalesOrderResponseDTO> createSalesOrder(@RequestBody SalesOrderRequestDTO salesOrderRequestDTO) {
         SalesOrder salesOrder = convertToEntity(salesOrderRequestDTO);
         SalesOrder createdOrder = salesService.createSalesOrder(salesOrder);
@@ -37,6 +41,7 @@ public class SalesController {
     }
 
     @PutMapping("/orders/{id}")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<SalesOrderResponseDTO> updateSalesOrder(
             @PathVariable UUID id,
             @RequestBody SalesOrderRequestDTO salesOrderRequestDTO) {
@@ -47,6 +52,7 @@ public class SalesController {
     }
 
     @GetMapping("/orders/{id}")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<SalesOrderResponseDTO> getSalesOrderById(@PathVariable UUID id) {
         return salesService.getSalesOrderById(id)
                 .map(this::convertToDTO)
@@ -55,6 +61,7 @@ public class SalesController {
     }
 
     @GetMapping("/orders")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<List<SalesOrderResponseDTO>> getAllSalesOrders() {
         List<SalesOrderResponseDTO> orders = salesService.getAllSalesOrders().stream()
                 .map(this::convertToDTO)
@@ -63,6 +70,7 @@ public class SalesController {
     }
 
     @GetMapping("/orders/customer/{customerName}")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<List<SalesOrderResponseDTO>> getSalesOrdersByCustomer(@PathVariable String customerName) {
         List<SalesOrderResponseDTO> orders = salesService.getSalesOrdersByCustomer(customerName).stream()
                 .map(this::convertToDTO)
@@ -71,6 +79,7 @@ public class SalesController {
     }
 
     @GetMapping("/orders/status/{status}")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<List<SalesOrderResponseDTO>> getSalesOrdersByStatus(@PathVariable String status) {
         List<SalesOrderResponseDTO> orders = salesService.getSalesOrdersByStatus(status).stream()
                 .map(this::convertToDTO)
@@ -79,6 +88,7 @@ public class SalesController {
     }
 
     @GetMapping("/orders/date-range")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<List<SalesOrderResponseDTO>> getSalesOrdersByDateRange(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
@@ -89,12 +99,14 @@ public class SalesController {
     }
 
     @DeleteMapping("/orders/{id}")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<Void> deleteSalesOrder(@PathVariable UUID id) {
         salesService.deleteSalesOrder(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/orders/{orderId}/items")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<SalesItemResponseDTO> addSalesItem(
             @PathVariable UUID orderId,
             @RequestBody SalesItemRequestDTO salesItemRequestDTO) {
@@ -104,12 +116,14 @@ public class SalesController {
     }
 
     @DeleteMapping("/items/{itemId}")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<Void> removeSalesItem(@PathVariable UUID itemId) {
         salesService.removeSalesItem(itemId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/orders/{orderId}/items")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<List<SalesItemResponseDTO>> getSalesItems(@PathVariable UUID orderId) {
         List<SalesItemResponseDTO> items = salesService.getSalesItems(orderId).stream()
                 .map(this::convertToDTO)
@@ -118,18 +132,21 @@ public class SalesController {
     }
 
     @PostMapping("/orders/{orderId}/process")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<Void> processSalesOrder(@PathVariable UUID orderId) {
         salesService.processSalesOrder(orderId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/orders/{orderId}/deliver")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<Void> markSalesOrderAsDelivered(@PathVariable UUID orderId) {
         salesService.markSalesOrderAsDelivered(orderId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/orders/{orderId}/status")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<Void> updateOrderStatus(
             @PathVariable UUID orderId,
             @RequestBody StatusUpdateDTO statusUpdateDTO) {
@@ -147,6 +164,7 @@ public class SalesController {
     }
 
     @GetMapping("/stock/check")
+    @RoleAllowed({"ADMIN", "SALES_OFFICER"})
     public ResponseEntity<Boolean> checkStockAvailability(
             @RequestParam UUID variantId,
             @RequestParam int quantity) {

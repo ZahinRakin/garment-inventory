@@ -4,11 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.fabricflowbackend.Domain.entities.Purchase;
+import org.example.fabricflowbackend.Domain.entities.PurchaseItem;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "purchases")
@@ -44,18 +48,49 @@ public class PurchaseEntity {
         purchase.setStatus(status);
         purchase.setTotalAmount(totalAmount);
         purchase.setCreatedAt(createdAt);
-        // Note: Items would need to be converted separately
+        // Initialize items list if null
+        if (this.items == null) {
+            this.items = new ArrayList<>();
+        }
+
+        // Convert all items
+        List<PurchaseItem> domainItems = this.items.stream()
+                .map(PurchaseItemEntity::toDomain)
+                .collect(Collectors.toList());
+
+        purchase.setItems(domainItems);
+
+        // Recalculate total amount based on converted items
+        purchase.calculateTotalAmount();
         return purchase;
     }
 
     public static PurchaseEntity fromDomain(Purchase purchase) {
         PurchaseEntity entity = new PurchaseEntity();
         entity.setId(purchase.getId());
+        SupplierEntity supplierEntity = new SupplierEntity();
+        supplierEntity.setId(purchase.getSupplierId());
+        entity.setSupplier(supplierEntity);
         // Note: Supplier would need to be set separately
         entity.setOrderDate(purchase.getOrderDate());
         entity.setStatus(purchase.getStatus());
         entity.setTotalAmount(purchase.getTotalAmount());
         entity.setCreatedAt(purchase.getCreatedAt());
+        
+        // Convert and set purchase items
+        if (purchase.getItems() != null && !purchase.getItems().isEmpty()) {
+            List<PurchaseItemEntity> itemEntities = purchase.getItems().stream()
+                    .map(item -> {
+                        PurchaseItemEntity itemEntity = PurchaseItemEntity.fromDomain(item);
+                        itemEntity.setPurchase(entity); // Set the bidirectional relationship
+                        return itemEntity;
+                    })
+                    .collect(Collectors.toList());
+            entity.setItems(itemEntities);
+        } else {
+            entity.setItems(new ArrayList<>());
+        }
+        
         return entity;
     }
 }

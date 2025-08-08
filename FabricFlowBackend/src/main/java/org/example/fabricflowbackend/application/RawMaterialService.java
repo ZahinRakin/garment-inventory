@@ -13,13 +13,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
-@Transactional
 public class RawMaterialService implements RawMaterialUseCase {
 
     private final RawMaterialRepository rawMaterialRepository;
 
-    @Autowired
     public RawMaterialService(RawMaterialRepository rawMaterialRepository) {
         this.rawMaterialRepository = rawMaterialRepository;
     }

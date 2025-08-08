@@ -47,6 +47,9 @@ public class ProductionOrderEntity {
         ProductionOrderEntity entity = new ProductionOrderEntity();
         entity.setId(order.getId());
         // Note: Variant would need to be set separately
+        VariantEntity variantEntity = new VariantEntity();
+        variantEntity.setId(order.getVariantId());
+        entity.setVariant(variantEntity);
         entity.setQuantity(order.getQuantity());
         entity.setStatus(order.getStatus());
         entity.setStartDate(order.getStartDate());

@@ -1,6 +1,7 @@
 package org.example.fabricflowbackend.infrastructure.controllers;
 
 
+import org.example.fabricflowbackend.Domain.services.StockUseCase;
 import org.example.fabricflowbackend.application.StockService;
 import org.example.fabricflowbackend.Domain.entities.RawMaterial;
 import org.example.fabricflowbackend.Domain.entities.Variant;
@@ -11,6 +12,7 @@ import org.example.fabricflowbackend.application.dto.stock.StockAdjustmentReques
 import org.example.fabricflowbackend.application.dto.stock.StockAlertDTO;
 import org.example.fabricflowbackend.application.dto.stock.StockTransferRequestDTO;
 import org.example.fabricflowbackend.application.dto.stock.StockValidationRequestDTO;
+import org.example.fabricflowbackend.infrastructure.annotation.RoleAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +25,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/stock")
 public class StockController {
 
-    private final StockService stockService;
+    private final StockUseCase stockService;
 
-    public StockController(StockService stockService) {
+    public StockController(StockUseCase stockService) {
         this.stockService = stockService;
     }
 
     @PostMapping("/adjust")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<Void> adjustStock(@RequestBody StockAdjustmentRequestDTO adjustmentRequest) {
         if (adjustmentRequest.isRawMaterial()) {
             stockService.adjustRawMaterialStock(
@@ -48,6 +51,7 @@ public class StockController {
     }
 
     @PostMapping("/transfer")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<Void> transferStock(@RequestBody StockTransferRequestDTO transferRequest) {
         if (transferRequest.isRawMaterial()) {
             stockService.transferRawMaterialStock(
@@ -66,18 +70,21 @@ public class StockController {
     }
 
     @GetMapping("/raw-materials/low-stock")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<List<RawMaterial>> getRawMaterialsWithLowStock() {
         List<RawMaterial> materials = stockService.getRawMaterialsWithLowStock();
         return ResponseEntity.ok(materials);
     }
 
     @GetMapping("/variants/low-stock")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<List<Variant>> getVariantsWithLowStock() {
         List<Variant> variants = stockService.getVariantsWithLowStock();
         return ResponseEntity.ok(variants);
     }
 
     @PostMapping("/validate")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<Boolean> validateStock(@RequestBody StockValidationRequestDTO validationRequest) {
         boolean isValid;
         if (validationRequest.isRawMaterial()) {
@@ -95,6 +102,7 @@ public class StockController {
     }
 
     @GetMapping("/alerts")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<List<StockAlertDTO>> getStockAlerts() {
         List<String> alerts = stockService.getStockAlerts();
         List<StockAlertDTO> alertDTOs = alerts.stream()
@@ -114,6 +122,7 @@ public class StockController {
     }
 
     @GetMapping("/report")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<Void> generateStockReport() {
         stockService.generateStockReport();
         return ResponseEntity.ok().build();

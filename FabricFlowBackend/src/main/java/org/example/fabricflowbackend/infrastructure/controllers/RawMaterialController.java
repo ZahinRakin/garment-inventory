@@ -1,10 +1,12 @@
 package org.example.fabricflowbackend.infrastructure.controllers;
 
 
+import org.example.fabricflowbackend.Domain.services.RawMaterialUseCase;
 import org.example.fabricflowbackend.application.dto.RawMaterial.*;
 import org.example.fabricflowbackend.application.RawMaterialService;
 import org.example.fabricflowbackend.Domain.entities.RawMaterial;
 import org.example.fabricflowbackend.Domain.exceptions.RawMaterialNotFoundException;
+import org.example.fabricflowbackend.infrastructure.annotation.RoleAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +19,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/raw-materials")
 public class RawMaterialController {
 
-    private final RawMaterialService rawMaterialService;
+    private final RawMaterialUseCase rawMaterialService;
 
-    public RawMaterialController(RawMaterialService rawMaterialService) {
+    public RawMaterialController(RawMaterialUseCase rawMaterialService) {
         this.rawMaterialService = rawMaterialService;
     }
 
     @PostMapping
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<RawMaterialResponseDto> createRawMaterial(@RequestBody RawMaterialRequestDto rawMaterialRequestDTO) {
         RawMaterial rawMaterial = convertToEntity(rawMaterialRequestDTO);
         RawMaterial createdMaterial = rawMaterialService.createRawMaterial(rawMaterial);
@@ -31,6 +34,7 @@ public class RawMaterialController {
     }
 
     @PutMapping("/{id}")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<RawMaterialResponseDto> updateRawMaterial(
             @PathVariable UUID id,
             @RequestBody RawMaterialRequestDto rawMaterialRequestDTO) {
@@ -41,6 +45,7 @@ public class RawMaterialController {
     }
 
     @GetMapping("/{id}")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<RawMaterialResponseDto> getRawMaterialById(@PathVariable UUID id) {
         return rawMaterialService.getRawMaterialById(id)
                 .map(this::convertToDTO)
@@ -49,6 +54,7 @@ public class RawMaterialController {
     }
 
     @GetMapping
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<List<RawMaterialResponseDto>> getAllRawMaterials() {
         List<RawMaterialResponseDto> materials = rawMaterialService.getAllRawMaterials().stream()
                 .map(this::convertToDTO)
@@ -57,6 +63,7 @@ public class RawMaterialController {
     }
 
     @GetMapping("/category/{category}")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<List<RawMaterialResponseDto>> getRawMaterialsByCategory(@PathVariable String category) {
         List<RawMaterialResponseDto> materials = rawMaterialService.getRawMaterialsByCategory(category).stream()
                 .map(this::convertToDTO)
@@ -65,12 +72,14 @@ public class RawMaterialController {
     }
 
     @DeleteMapping("/{id}")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<Void> deleteRawMaterial(@PathVariable UUID id) {
         rawMaterialService.deleteRawMaterial(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/consume")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<Void> consumeStock(
             @PathVariable UUID id,
             @RequestBody StockUpdateDto stockUpdateDTO) {
@@ -79,6 +88,7 @@ public class RawMaterialController {
     }
 
     @PostMapping("/{id}/add-stock")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<Void> addStock(
             @PathVariable UUID id,
             @RequestBody StockUpdateDto stockUpdateDTO) {
@@ -87,6 +97,7 @@ public class RawMaterialController {
     }
 
     @GetMapping("/needing-reorder")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<List<RawMaterialResponseDto>> getMaterialsNeedingReorder() {
         List<RawMaterialResponseDto> materials = rawMaterialService.getMaterialsNeedingReorder().stream()
                 .map(this::convertToDTO)
@@ -95,6 +106,7 @@ public class RawMaterialController {
     }
 
     @GetMapping("/low-stock")
+    @RoleAllowed({ "ADMIN", "STORE_MANAGER"})
     public ResponseEntity<List<RawMaterialResponseDto>> getLowStockMaterials(
             @RequestParam(required = false, defaultValue = "0") int threshold) {
         List<RawMaterialResponseDto> materials = rawMaterialService.getLowStockMaterials(threshold).stream()

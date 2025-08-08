@@ -5,11 +5,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.fabricflowbackend.Domain.entities.SalesOrder;
+import org.example.fabricflowbackend.Domain.entities.SalesItem;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "sales_orders")
@@ -44,7 +47,21 @@ public class SalesOrderEntity {
         order.setStatus(status);
         order.setTotalAmount(totalAmount);
         order.setCreatedAt(createdAt);
-        // Note: Items would need to be converted separately
+        
+        // Initialize items list if null
+        if (this.items == null) {
+            this.items = new ArrayList<>();
+        }
+
+        // Convert all items
+        List<SalesItem> domainItems = this.items.stream()
+                .map(SalesItemEntity::toDomain)
+                .collect(Collectors.toList());
+
+        order.setItems(domainItems);
+
+        // Recalculate total amount based on converted items
+        order.calculateTotalAmount();
         return order;
     }
 
@@ -56,6 +73,21 @@ public class SalesOrderEntity {
         entity.setOrderDate(order.getOrderDate());
         entity.setTotalAmount(order.getTotalAmount());
         entity.setCreatedAt(order.getCreatedAt());
+        
+        // Convert and set sales items
+        if (order.getItems() != null && !order.getItems().isEmpty()) {
+            List<SalesItemEntity> itemEntities = order.getItems().stream()
+                    .map(item -> {
+                        SalesItemEntity itemEntity = SalesItemEntity.fromDomain(item);
+                        itemEntity.setSalesOrder(entity); // Set the bidirectional relationship
+                        return itemEntity;
+                    })
+                    .collect(Collectors.toList());
+            entity.setItems(itemEntities);
+        } else {
+            entity.setItems(new ArrayList<>());
+        }
+        
         return entity;
     }
 }
