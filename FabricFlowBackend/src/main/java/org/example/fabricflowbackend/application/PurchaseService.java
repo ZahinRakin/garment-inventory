@@ -10,6 +10,7 @@ import org.example.fabricflowbackend.Domain.repositories.PurchaseRepository;
 import org.example.fabricflowbackend.Domain.repositories.RawMaterialRepository;
 import org.example.fabricflowbackend.Domain.repositories.SupplierRepository;
 import org.example.fabricflowbackend.Domain.services.PurchaseUseCase;
+import org.example.fabricflowbackend.Domain.services.RawMaterialUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,22 +20,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
-@Transactional
 public class PurchaseService implements PurchaseUseCase {
 
     private final PurchaseRepository purchaseRepository;
     private final PurchaseItemRepository purchaseItemRepository;
     private final SupplierRepository supplierRepository;
     private final RawMaterialRepository rawMaterialRepository;
-    private final RawMaterialService rawMaterialService;
+    private final RawMaterialUseCase rawMaterialService;
 
-    @Autowired
     public PurchaseService(PurchaseRepository purchaseRepository,
                                PurchaseItemRepository purchaseItemRepository,
                                SupplierRepository supplierRepository,
                                RawMaterialRepository rawMaterialRepository,
-                               RawMaterialService rawMaterialService) {
+                               RawMaterialUseCase rawMaterialService) {
         this.purchaseRepository = purchaseRepository;
         this.purchaseItemRepository = purchaseItemRepository;
         this.supplierRepository = supplierRepository;

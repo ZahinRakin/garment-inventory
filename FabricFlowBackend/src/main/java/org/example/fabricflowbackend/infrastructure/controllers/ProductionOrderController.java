@@ -6,6 +6,7 @@ import org.example.fabricflowbackend.Domain.exceptions.VariantNotFoundException;
 import org.example.fabricflowbackend.Domain.services.ProductionUseCase;
 import org.example.fabricflowbackend.application.dto.productionorder.ProductionOrderRequestDto;
 import org.example.fabricflowbackend.application.dto.productionorder.ProductionOrderResponseDto;
+import org.example.fabricflowbackend.infrastructure.annotation.RoleAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,17 +26,21 @@ public class ProductionOrderController {
     }
 
     @PostMapping
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<ProductionOrderResponseDto> createProductionOrder(
             @RequestBody ProductionOrderRequestDto requestDTO) {
         ProductionOrder order = new ProductionOrder();
         order.setVariantId(requestDTO.getVariantId());
         order.setQuantity(requestDTO.getQuantity());
+        order.setStartDate(requestDTO.getStartDate());
+        order.setEndDate(requestDTO.getEndDate());
 
         ProductionOrder createdOrder = productionService.createProductionOrder(order);
         return new ResponseEntity<>(convertToResponseDto(createdOrder), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<ProductionOrderResponseDto> updateProductionOrder(
             @PathVariable UUID id,
             @RequestBody ProductionOrderRequestDto requestDTO) {
@@ -49,6 +54,7 @@ public class ProductionOrderController {
     }
 
     @GetMapping("/{id}")
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<ProductionOrderResponseDto> getProductionOrderById(@PathVariable UUID id) {
         return productionService.getProductionOrderById(id)
                 .map(this::convertToResponseDto)
@@ -57,6 +63,7 @@ public class ProductionOrderController {
     }
 
     @GetMapping
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<List<ProductionOrderResponseDto>> getAllProductionOrders() {
         List<ProductionOrderResponseDto> orders = productionService.getAllProductionOrders().stream()
                 .map(this::convertToResponseDto)
@@ -65,6 +72,7 @@ public class ProductionOrderController {
     }
 
     @GetMapping("/variant/{variantId}")
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<List<ProductionOrderResponseDto>> getProductionOrdersByVariant(
             @PathVariable UUID variantId) {
         List<ProductionOrderResponseDto> orders = productionService.getProductionOrdersByVariant(variantId).stream()
@@ -74,6 +82,7 @@ public class ProductionOrderController {
     }
 
     @GetMapping("/status/{status}")
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<List<ProductionOrderResponseDto>> getProductionOrdersByStatus(
             @PathVariable String status) {
         List<ProductionOrderResponseDto> orders = productionService.getProductionOrdersByStatus(status).stream()
@@ -83,12 +92,14 @@ public class ProductionOrderController {
     }
 
     @DeleteMapping("/{id}")
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<Void> deleteProductionOrder(@PathVariable UUID id) {
         productionService.deleteProductionOrder(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/start")
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<ProductionOrderResponseDto> startProduction(@PathVariable UUID id) {
         productionService.startProduction(id);
         return productionService.getProductionOrderById(id)
@@ -98,6 +109,7 @@ public class ProductionOrderController {
     }
 
     @PostMapping("/{id}/complete")
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<ProductionOrderResponseDto> completeProduction(@PathVariable UUID id) {
         productionService.completeProduction(id);
         return productionService.getProductionOrderById(id)
@@ -107,6 +119,7 @@ public class ProductionOrderController {
     }
 
     @GetMapping("/pending")
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<List<ProductionOrderResponseDto>> getPendingOrders() {
         List<ProductionOrderResponseDto> orders = productionService.getPendingOrders().stream()
                 .map(this::convertToResponseDto)
@@ -115,6 +128,7 @@ public class ProductionOrderController {
     }
 
     @GetMapping("/in-progress")
+    @RoleAllowed({ "ADMIN", "PRODUCTION_OFFICER"})
     public ResponseEntity<List<ProductionOrderResponseDto>> getInProgressOrders() {
         List<ProductionOrderResponseDto> orders = productionService.getInProgressOrders().stream()
                 .map(this::convertToResponseDto)

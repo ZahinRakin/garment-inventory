@@ -39,6 +39,12 @@ public class PurchaseItemEntity {
         PurchaseItemEntity entity = new PurchaseItemEntity();
         entity.setId(item.getId());
         // Note: Purchase and Material would need to be set separately
+        PurchaseEntity purchaseEntity = new PurchaseEntity();
+        purchaseEntity.setId(item.getPurchaseId());
+        entity.setPurchase(purchaseEntity);
+        RawMaterialEntity materialEntity = new RawMaterialEntity();
+        materialEntity.setId(item.getMaterialId());
+        entity.setMaterial(materialEntity);
         entity.setQuantity(item.getQuantity());
         entity.setUnitPrice(item.getUnitPrice());
         return entity;

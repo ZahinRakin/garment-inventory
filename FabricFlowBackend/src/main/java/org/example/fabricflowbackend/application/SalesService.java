@@ -17,14 +17,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
 public class SalesService implements SalesUseCase {
 
     private final SalesOrderRepository salesOrderRepository;
     private final SalesItemRepository salesItemRepository;
     private final VariantRepository variantRepository;
-
-    @Autowired
     public SalesService(SalesOrderRepository salesOrderRepository,
                         SalesItemRepository salesItemRepository,
                         VariantRepository variantRepository) {

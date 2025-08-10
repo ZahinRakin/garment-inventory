@@ -1,10 +1,12 @@
 package org.example.fabricflowbackend.infrastructure.controllers;
 
+import org.example.fabricflowbackend.Domain.services.ReportUseCase;
 import org.example.fabricflowbackend.application.ReportService;
 import org.example.fabricflowbackend.application.dto.report.LowStockItemDTO;
 import org.example.fabricflowbackend.application.dto.report.SalesReportDTO;
 import org.example.fabricflowbackend.application.dto.report.StockSummaryReportDTO;
 import org.example.fabricflowbackend.application.dto.report.TopItemsDTO;
+import org.example.fabricflowbackend.infrastructure.annotation.RoleAllowed;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +21,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/reports")
 public class ReportController {
 
-    private final ReportService reportService;
+    private final ReportUseCase reportService;
 
-    public ReportController(ReportService reportService) {
+    public ReportController(ReportUseCase reportService) {
         this.reportService = reportService;
     }
 
     @GetMapping("/stock-summary")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<StockSummaryReportDTO> getStockSummaryReport() {
         Map<String, Object> report = reportService.getStockSummaryReport();
         StockSummaryReportDTO dto = new StockSummaryReportDTO();
@@ -37,16 +40,19 @@ public class ReportController {
     }
 
     @GetMapping("/raw-material-stock")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Map<String, Object>> getRawMaterialStockReport() {
         return ResponseEntity.ok(reportService.getRawMaterialStockReport());
     }
 
-    @GetMapping("/finished-goods-stock")  //here the dto in use is what?
+    @GetMapping("/finished-goods-stock")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Map<String, Object>> getFinishedGoodsStockReport() {
         return ResponseEntity.ok(reportService.getFinishedGoodsStockReport());
     }
 
     @GetMapping("/low-stock")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<LowStockItemDTO>> getLowStockReport() {
         List<Map<String, Object>> report = reportService.getLowStockReport();
         List<LowStockItemDTO> dtos = report.stream()
@@ -64,6 +70,7 @@ public class ReportController {
     }
 
     @GetMapping("/purchases")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Map<String, Object>> getPurchaseReport(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
@@ -71,6 +78,7 @@ public class ReportController {
     }
 
     @GetMapping("/purchases/supplier")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Map<String, Object>> getPurchaseReportBySupplier(
             @RequestParam UUID supplierId,
             @RequestParam LocalDate startDate,
@@ -79,11 +87,13 @@ public class ReportController {
     }
 
     @GetMapping("/top-suppliers")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<Map<String, Object>>> getTopSuppliers(@RequestParam(defaultValue = "5") int limit) {
         return ResponseEntity.ok(reportService.getTopSuppliers(limit));
     }
 
     @GetMapping("/production")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Map<String, Object>> getProductionReport(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
@@ -91,16 +101,19 @@ public class ReportController {
     }
 
     @GetMapping("/production/status")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<Map<String, Object>>> getProductionOrdersByStatus() {
         return ResponseEntity.ok(reportService.getProductionOrdersByStatus());
     }
 
     @GetMapping("/production/efficiency")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Map<String, Object>> getProductionEfficiencyReport() {
         return ResponseEntity.ok(reportService.getProductionEfficiencyReport());
     }
 
     @GetMapping("/sales")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<SalesReportDTO> getSalesReport(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
@@ -112,6 +125,7 @@ public class ReportController {
     }
 
     @GetMapping("/sales/top-products")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<TopItemsDTO>> getTopSellingProducts(@RequestParam(defaultValue = "5") int limit) {
         List<Map<String, Object>> report = reportService.getTopSellingProducts(limit);
         List<TopItemsDTO> dtos = report.stream()
@@ -126,6 +140,7 @@ public class ReportController {
     }
 
     @GetMapping("/sales/top-customers")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<TopItemsDTO>> getTopCustomers(@RequestParam(defaultValue = "5") int limit) {
         List<Map<String, Object>> report = reportService.getTopCustomers(limit);
         List<TopItemsDTO> dtos = report.stream()
@@ -140,6 +155,7 @@ public class ReportController {
     }
 
     @GetMapping("/sales/revenue")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Map<String, Object>> getSalesRevenueReport(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
@@ -147,26 +163,31 @@ public class ReportController {
     }
 
     @GetMapping("/inventory/value")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<BigDecimal> getTotalInventoryValue() {
         return ResponseEntity.ok(reportService.getTotalInventoryValue());
     }
 
     @GetMapping("/alerts")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<String>> getAllAlerts() {
         return ResponseEntity.ok(reportService.getAllAlerts());
     }
 
     @GetMapping("/alerts/stock")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<String>> getStockAlerts() {
         return ResponseEntity.ok(reportService.getStockAlerts());
     }
 
     @GetMapping("/alerts/production")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<String>> getProductionAlerts() {
         return ResponseEntity.ok(reportService.getProductionAlerts());
     }
 
     @GetMapping("/alerts/purchase")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<String>> getPurchaseAlerts() {
         return ResponseEntity.ok(reportService.getPurchaseAlerts());
     }

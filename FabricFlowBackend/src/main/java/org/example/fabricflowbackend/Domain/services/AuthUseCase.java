@@ -1,10 +1,10 @@
 package org.example.fabricflowbackend.Domain.services;
 
 import org.example.fabricflowbackend.Domain.entities.User;
+import java.util.Optional;
 
 public interface AuthUseCase {
-    User registerUser(String firstName, String lastName, String email, String password, String role);
-    String loginUser(String email, String password);
-    User getCurrentUser(String token);
-    boolean validateToken(String token);
-} 
+    User register(User user);
+    String login(String username, String password);
+    Optional<User> getAuthenticatedUser(String username);
+}

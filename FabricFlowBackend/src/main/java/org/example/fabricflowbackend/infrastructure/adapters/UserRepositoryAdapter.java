@@ -4,76 +4,51 @@ import org.example.fabricflowbackend.Domain.entities.User;
 import org.example.fabricflowbackend.Domain.repositories.UserRepository;
 import org.example.fabricflowbackend.infrastructure.persistence.UserEntity;
 import org.example.fabricflowbackend.infrastructure.repositories.UserJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
-public class UserRepositoryAdapter implements UserRepository {
+public class UserRepositoryAdapter implements org.example.fabricflowbackend.Domain.repositories.UserRepository {
+    private final UserJpaRepository userJpaRepository;
 
-    private final UserJpaRepository jpaRepository;
-
-    @Autowired
-    public UserRepositoryAdapter(UserJpaRepository jpaRepository) {
-        this.jpaRepository = jpaRepository;
+    public UserRepositoryAdapter(UserJpaRepository userJpaRepository) {
+        this.userJpaRepository = userJpaRepository;
     }
 
     @Override
     public User save(User user) {
-        UserEntity entity;
-        
-        // For new users during registration, create entity without setting ID
-        // This allows Hibernate to generate a new ID automatically
-        if (!jpaRepository.existsByEmail(user.getEmail())) {
-            // New user - create entity without ID
-            entity = new UserEntity();
-            entity.setFirstName(user.getFirstName());
-            entity.setLastName(user.getLastName());
-            entity.setEmail(user.getEmail());
-            entity.setPassword(user.getPassword());
-            entity.setRole(user.getRole());
-            entity.setEnabled(user.isEnabled());
-            entity.setCreatedAt(user.getCreatedAt());
-            entity.setUpdatedAt(user.getUpdatedAt());
-        } else {
-            // Existing user - preserve the ID for updates
-            entity = new UserEntity(user);
-        }
-        
-        UserEntity savedEntity = jpaRepository.save(entity);
+        UserEntity entity = UserEntity.fromDomain(user);
+        UserEntity savedEntity = userJpaRepository.save(entity);
         return savedEntity.toDomain();
     }
 
     @Override
     public Optional<User> findById(UUID id) {
-        return jpaRepository.findById(id)
+        return userJpaRepository.findById(id)
+                .map(UserEntity::toDomain);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userJpaRepository.findByUsername(username)
                 .map(UserEntity::toDomain);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return jpaRepository.findByEmail(email)
+        return userJpaRepository.findByEmail(email)
                 .map(UserEntity::toDomain);
     }
 
     @Override
-    public List<User> findAll() {
-        return jpaRepository.findAll().stream()
-                .map(UserEntity::toDomain)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public void deleteById(UUID id) {
-        jpaRepository.deleteById(id);
+    public boolean existsByUsername(String username) {
+        return userJpaRepository.existsByUsername(username);
     }
 
     @Override
     public boolean existsByEmail(String email) {
-        return jpaRepository.existsByEmail(email);
+        return userJpaRepository.existsByEmail(email);
     }
-} 
+}

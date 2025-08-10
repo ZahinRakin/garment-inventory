@@ -12,13 +12,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
-@Transactional
 public class SupplierService implements SupplierUseCase {
 
     private final SupplierRepository supplierRepository;
 
-    @Autowired
     public SupplierService(SupplierRepository supplierRepository) {
         this.supplierRepository = supplierRepository;
     }

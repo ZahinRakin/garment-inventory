@@ -17,14 +17,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
-
 public class ProductService implements ProductUseCase {
 
     private final ProductRepository productRepository;
     private final VariantRepository variantRepository;
-
-    @Autowired
     public ProductService(ProductRepository productRepository, VariantRepository variantRepository) {
         this.productRepository = productRepository;
         this.variantRepository = variantRepository;

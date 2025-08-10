@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
 public class ReportService implements ReportUseCase {
 
     private final RawMaterialRepository rawMaterialRepository;
@@ -21,8 +20,6 @@ public class ReportService implements ReportUseCase {
     private final ProductionOrderRepository productionOrderRepository;
     private final AlertRepository alertRepository;
     private final SalesItemRepository salesItemRepository;
-
-    @Autowired
     public ReportService(RawMaterialRepository rawMaterialRepository,
                          VariantRepository variantRepository,
                          PurchaseRepository purchaseRepository,

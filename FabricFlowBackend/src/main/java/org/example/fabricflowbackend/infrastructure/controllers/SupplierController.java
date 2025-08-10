@@ -1,11 +1,13 @@
 package org.example.fabricflowbackend.infrastructure.controllers;
 
 
+import org.example.fabricflowbackend.Domain.services.SupplierUseCase;
 import org.example.fabricflowbackend.application.SupplierService;
 import org.example.fabricflowbackend.Domain.entities.Supplier;
 import org.example.fabricflowbackend.Domain.exceptions.SupplierNotFoundException;
 import org.example.fabricflowbackend.application.dto.supplier.SupplierRequestDto;
 import org.example.fabricflowbackend.application.dto.supplier.SupplierResponseDto;
+import org.example.fabricflowbackend.infrastructure.annotation.RoleAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +20,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/suppliers")
 public class SupplierController {
 
-    private final SupplierService supplierService;
+    private final SupplierUseCase supplierService;
 
-    public SupplierController(SupplierService supplierService) {
+    public SupplierController(SupplierUseCase supplierService) {
         this.supplierService = supplierService;
     }
 
     @PostMapping
+    @RoleAllowed("ADMIN")
     public ResponseEntity<SupplierResponseDto> createSupplier(@RequestBody SupplierRequestDto supplierRequestDTO) {
         Supplier supplier = convertToEntity(supplierRequestDTO);
         Supplier createdSupplier = supplierService.createSupplier(supplier);
@@ -32,6 +35,7 @@ public class SupplierController {
     }
 
     @PutMapping("/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<SupplierResponseDto> updateSupplier(
             @PathVariable UUID id,
             @RequestBody SupplierRequestDto supplierRequestDTO) {
@@ -42,6 +46,7 @@ public class SupplierController {
     }
 
     @GetMapping("/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<SupplierResponseDto> getSupplierById(@PathVariable UUID id) {
         return supplierService.getSupplierById(id)
                 .map(this::convertToDTO)
@@ -50,6 +55,7 @@ public class SupplierController {
     }
 
     @GetMapping
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<SupplierResponseDto>> getAllSuppliers() {
         List<SupplierResponseDto> suppliers = supplierService.getAllSuppliers().stream()
                 .map(this::convertToDTO)
@@ -58,6 +64,7 @@ public class SupplierController {
     }
 
     @GetMapping("/search")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<SupplierResponseDto>> findSuppliersByName(@RequestParam String name) {
         List<SupplierResponseDto> suppliers = supplierService.findSuppliersByName(name).stream()
                 .map(this::convertToDTO)
@@ -66,6 +73,7 @@ public class SupplierController {
     }
 
     @DeleteMapping("/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Void> deleteSupplier(@PathVariable UUID id) {
         supplierService.deleteSupplier(id);
         return ResponseEntity.noContent().build();
