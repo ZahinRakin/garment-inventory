@@ -40,6 +40,12 @@ public class SalesItemEntity {
         SalesItemEntity entity = new SalesItemEntity();
         entity.setId(item.getId());
         // Note: SalesOrder and Variant would need to be set separately
+        SalesOrderEntity salesOrderEntity = new SalesOrderEntity();
+        salesOrderEntity.setId(item.getSalesOrderId());
+        entity.setSalesOrder(salesOrderEntity);
+        VariantEntity variantEntity = new VariantEntity();
+        variantEntity.setId(item.getVariantId());
+        entity.setVariant(variantEntity);
         entity.setQuantity(item.getQuantity());
         entity.setUnitPrice(item.getUnitPrice());
         return entity;

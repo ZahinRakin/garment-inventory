@@ -15,14 +15,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
-@Transactional
 public class ProductionService implements ProductionUseCase {
 
     private final ProductionOrderRepository productionOrderRepository;
     private final VariantRepository variantRepository;
 
-    @Autowired
     public ProductionService(ProductionOrderRepository productionOrderRepository,
                                  VariantRepository variantRepository) {
         this.productionOrderRepository = productionOrderRepository;

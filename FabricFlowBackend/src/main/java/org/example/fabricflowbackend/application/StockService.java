@@ -16,14 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Service
-@Transactional
 public class StockService implements StockUseCase {
 
     private final RawMaterialRepository rawMaterialRepository;
     private final VariantRepository variantRepository;
-
-    @Autowired
     public StockService(RawMaterialRepository rawMaterialRepository,
                         VariantRepository variantRepository) {
         this.rawMaterialRepository = rawMaterialRepository;

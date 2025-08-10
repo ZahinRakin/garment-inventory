@@ -10,6 +10,8 @@ import org.example.fabricflowbackend.application.dto.product.ProductRequestDto;
 import org.example.fabricflowbackend.application.dto.product.ProductResponseDto;
 import org.example.fabricflowbackend.application.dto.variant.VariantRequestDto;
 import org.example.fabricflowbackend.application.dto.variant.VariantResponseDto;
+import org.example.fabricflowbackend.infrastructure.annotation.RoleAllowed;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,6 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     private final ProductUseCase productService;
-
     public ProductController(ProductUseCase productService) {
         this.productService = productService;
     }
@@ -31,6 +32,7 @@ public class ProductController {
     // Product Endpoints
 
     @PostMapping
+    @RoleAllowed("ADMIN")
     public ResponseEntity<ProductResponseDto> createProduct(@RequestBody ProductRequestDto productDTO) {
         Product product = new Product();
         product.setName(productDTO.getName());
@@ -42,6 +44,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @RoleAllowed({"ADMIN","SALES_OFFICER"})
     public ResponseEntity<ProductResponseDto> updateProduct(
             @PathVariable UUID id,
             @RequestBody ProductRequestDto productDTO) {
@@ -56,6 +59,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable UUID id) {
         return productService.getProductById(id)
                 .map(this::convertToProductResponseDTO)
@@ -64,6 +68,7 @@ public class ProductController {
     }
 
     @GetMapping
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
         List<ProductResponseDto> products = productService.getAllProducts().stream()
                 .map(this::convertToProductResponseDTO)
@@ -72,6 +77,7 @@ public class ProductController {
     }
 
     @GetMapping("/category/{category}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<ProductResponseDto>> getProductsByCategory(@PathVariable String category) {
         List<ProductResponseDto> products = productService.getProductsByCategory(category).stream()
                 .map(this::convertToProductResponseDTO)
@@ -80,6 +86,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
@@ -88,6 +95,7 @@ public class ProductController {
     // Variant Endpoints
 
     @PostMapping("/{productId}/variants")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<VariantResponseDto> createVariant(
             @PathVariable UUID productId,
             @RequestBody VariantRequestDto variantDTO) {
@@ -104,6 +112,7 @@ public class ProductController {
     }
 
     @PutMapping("/variants/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<VariantResponseDto> updateVariant(
             @PathVariable UUID id,
             @RequestBody VariantRequestDto variantDTO) {
@@ -121,6 +130,7 @@ public class ProductController {
     }
 
     @GetMapping("/variants/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<VariantResponseDto> getVariantById(@PathVariable UUID id) {
         return productService.getVariantById(id)
                 .map(this::convertToVariantResponseDTO)
@@ -129,6 +139,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/variants")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<VariantResponseDto>> getVariantsByProductId(@PathVariable UUID productId) {
         List<VariantResponseDto> variants = productService.getVariantsByProductId(productId).stream()
                 .map(this::convertToVariantResponseDTO)
@@ -137,6 +148,7 @@ public class ProductController {
     }
 
     @GetMapping("/variants/low-stock")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<VariantResponseDto>> getLowStockVariants(
             @RequestParam(defaultValue = "10") int threshold) {
         List<VariantResponseDto> variants = productService.getLowStockVariants(threshold).stream()
@@ -146,6 +158,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/variants/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Void> deleteVariant(@PathVariable UUID id) {
         productService.deleteVariant(id);
         return ResponseEntity.noContent().build();

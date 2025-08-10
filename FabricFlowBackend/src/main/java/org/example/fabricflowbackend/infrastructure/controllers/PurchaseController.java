@@ -1,4 +1,5 @@
 package org.example.fabricflowbackend.infrastructure.controllers;
+import org.example.fabricflowbackend.Domain.services.PurchaseUseCase;
 import org.example.fabricflowbackend.application.PurchaseService;
 import org.example.fabricflowbackend.Domain.entities.Purchase;
 import org.example.fabricflowbackend.Domain.entities.PurchaseItem;
@@ -8,6 +9,7 @@ import org.example.fabricflowbackend.application.dto.purchase.PurchaseResponseDT
 import org.example.fabricflowbackend.application.dto.purchase.StatusUpdateDTO;
 import org.example.fabricflowbackend.application.dto.purchaseitem.PurchaseItemRequestDTO;
 import org.example.fabricflowbackend.application.dto.purchaseitem.PurchaseItemResponseDTO;
+import org.example.fabricflowbackend.infrastructure.annotation.RoleAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +23,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/purchases")
 public class PurchaseController {
 
-    private final PurchaseService purchaseService;
+    private final PurchaseUseCase purchaseService;
 
-    public PurchaseController(PurchaseService purchaseService) {
+    public PurchaseController(PurchaseUseCase purchaseService) {
         this.purchaseService = purchaseService;
     }
 
     @PostMapping
+    @RoleAllowed("ADMIN")
     public ResponseEntity<PurchaseResponseDTO> createPurchase(@RequestBody PurchaseRequestDTO purchaseRequestDTO) {
         Purchase purchase = convertToEntity(purchaseRequestDTO);
         Purchase createdPurchase = purchaseService.createPurchase(purchase);
@@ -35,6 +38,7 @@ public class PurchaseController {
     }
 
     @PutMapping("/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<PurchaseResponseDTO> updatePurchase(
             @PathVariable UUID id,
             @RequestBody PurchaseRequestDTO purchaseRequestDTO) {
@@ -45,6 +49,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<PurchaseResponseDTO> getPurchaseById(@PathVariable UUID id) {
         return purchaseService.getPurchaseById(id)
                 .map(this::convertToDTO)
@@ -53,6 +58,7 @@ public class PurchaseController {
     }
 
     @GetMapping
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<PurchaseResponseDTO>> getAllPurchases() {
         List<PurchaseResponseDTO> purchases = purchaseService.getAllPurchases().stream()
                 .map(this::convertToDTO)
@@ -61,6 +67,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/supplier/{supplierId}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<PurchaseResponseDTO>> getPurchasesBySupplier(@PathVariable UUID supplierId) {
         List<PurchaseResponseDTO> purchases = purchaseService.getPurchasesBySupplier(supplierId).stream()
                 .map(this::convertToDTO)
@@ -69,6 +76,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/status/{status}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<PurchaseResponseDTO>> getPurchasesByStatus(@PathVariable String status) {
         List<PurchaseResponseDTO> purchases = purchaseService.getPurchasesByStatus(status).stream()
                 .map(this::convertToDTO)
@@ -77,6 +85,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/date-range")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<PurchaseResponseDTO>> getPurchasesByDateRange(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
@@ -87,12 +96,14 @@ public class PurchaseController {
     }
 
     @DeleteMapping("/{id}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Void> deletePurchase(@PathVariable UUID id) {
         purchaseService.deletePurchase(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{purchaseId}/items")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<PurchaseItemResponseDTO> addPurchaseItem(
             @PathVariable UUID purchaseId,
             @RequestBody PurchaseItemRequestDTO purchaseItemRequestDTO) {
@@ -102,12 +113,14 @@ public class PurchaseController {
     }
 
     @DeleteMapping("/items/{itemId}")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Void> removePurchaseItem(@PathVariable UUID itemId) {
         purchaseService.removePurchaseItem(itemId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{purchaseId}/items")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<List<PurchaseItemResponseDTO>> getPurchaseItems(@PathVariable UUID purchaseId) {
         List<PurchaseItemResponseDTO> items = purchaseService.getPurchaseItems(purchaseId).stream()
                 .map(this::convertToDTO)
@@ -116,18 +129,21 @@ public class PurchaseController {
     }
 
     @PostMapping("/{purchaseId}/receive")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Void> markPurchaseAsReceived(@PathVariable UUID purchaseId) {
         purchaseService.markPurchaseAsReceived(purchaseId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{purchaseId}/process-receipt")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Void> processPurchaseReceipt(@PathVariable UUID purchaseId) {
         purchaseService.processPurchaseReceipt(purchaseId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{purchaseId}/status")
+    @RoleAllowed("ADMIN")
     public ResponseEntity<Void> updatePurchaseStatus(
             @PathVariable UUID purchaseId,
             @RequestBody StatusUpdateDTO statusUpdateDTO) {
