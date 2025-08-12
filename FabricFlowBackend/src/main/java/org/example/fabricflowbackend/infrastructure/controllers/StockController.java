@@ -5,12 +5,10 @@ import org.example.fabricflowbackend.Domain.services.StockUseCase;
 import org.example.fabricflowbackend.application.StockService;
 import org.example.fabricflowbackend.Domain.entities.RawMaterial;
 import org.example.fabricflowbackend.Domain.entities.Variant;
-import org.example.fabricflowbackend.Domain.entities.StockAdjustment;
 import org.example.fabricflowbackend.Domain.exceptions.InsufficientStockException;
 import org.example.fabricflowbackend.Domain.exceptions.RawMaterialNotFoundException;
 import org.example.fabricflowbackend.Domain.exceptions.VariantNotFoundException;
 import org.example.fabricflowbackend.application.dto.stock.StockAdjustmentRequestDTO;
-import org.example.fabricflowbackend.application.dto.stock.StockAdjustmentResponseDTO;
 import org.example.fabricflowbackend.application.dto.stock.StockAlertDTO;
 import org.example.fabricflowbackend.application.dto.stock.StockTransferRequestDTO;
 import org.example.fabricflowbackend.application.dto.stock.StockValidationRequestDTO;
@@ -121,27 +119,6 @@ public class StockController {
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(alertDTOs);
-    }
-
-    @GetMapping("/adjustments")
-    public ResponseEntity<List<StockAdjustmentResponseDTO>> getStockAdjustments() {
-        List<StockAdjustment> adjustments = stockService.getAllStockAdjustments();
-        List<StockAdjustmentResponseDTO> adjustmentDTOs = adjustments.stream()
-                .map(adjustment -> {
-                    StockAdjustmentResponseDTO dto = new StockAdjustmentResponseDTO();
-                    dto.setId(adjustment.getId());
-                    dto.setItemId(adjustment.getItemId());
-                    dto.setItemType(adjustment.getItemType());
-                    dto.setQuantityBefore(adjustment.getQuantityBefore());
-                    dto.setQuantityAfter(adjustment.getQuantityAfter());
-                    dto.setAdjustmentAmount(adjustment.getAdjustmentAmount());
-                    dto.setReason(adjustment.getReason());
-                    dto.setAdjustedBy(adjustment.getAdjustedBy());
-                    dto.setAdjustmentDate(adjustment.getAdjustmentDate());
-                    return dto;
-                })
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(adjustmentDTOs);
     }
 
     @GetMapping("/report")

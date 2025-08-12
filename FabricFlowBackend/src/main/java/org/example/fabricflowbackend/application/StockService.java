@@ -2,13 +2,11 @@ package org.example.fabricflowbackend.application;
 
 import org.example.fabricflowbackend.Domain.entities.RawMaterial;
 import org.example.fabricflowbackend.Domain.entities.Variant;
-import org.example.fabricflowbackend.Domain.entities.StockAdjustment;
 import org.example.fabricflowbackend.Domain.exceptions.InsufficientStockException;
 import org.example.fabricflowbackend.Domain.exceptions.RawMaterialNotFoundException;
 import org.example.fabricflowbackend.Domain.exceptions.VariantNotFoundException;
 import org.example.fabricflowbackend.Domain.repositories.RawMaterialRepository;
 import org.example.fabricflowbackend.Domain.repositories.VariantRepository;
-import org.example.fabricflowbackend.Domain.repositories.StockAdjustmentRepository;
 import org.example.fabricflowbackend.Domain.services.StockUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,11 +21,9 @@ public class StockService implements StockUseCase {
     private final RawMaterialRepository rawMaterialRepository;
     private final VariantRepository variantRepository;
     public StockService(RawMaterialRepository rawMaterialRepository,
-                        VariantRepository variantRepository,
-                        StockAdjustmentRepository stockAdjustmentRepository) {
+                        VariantRepository variantRepository) {
         this.rawMaterialRepository = rawMaterialRepository;
         this.variantRepository = variantRepository;
-        this.stockAdjustmentRepository = stockAdjustmentRepository;
     }
 
     @Override
@@ -169,10 +165,5 @@ public class StockService implements StockUseCase {
         variantRepository.findAll().forEach(variant -> {
             System.out.printf("- %s: %d in stock%n", variant.getSku(), variant.getQuantity());
         });
-    }
-
-    @Override
-    public List<StockAdjustment> getAllStockAdjustments() {
-        return stockAdjustmentRepository.findAll();
     }
 }
