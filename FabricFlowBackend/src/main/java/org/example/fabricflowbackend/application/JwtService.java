@@ -93,17 +93,7 @@ public class JwtService {
         }
     }
 
-    public Boolean validateToken(String token) {
-        logger.debug("🔍 JwtService - Validating token (length: {})", token.length());
-        try {
-            boolean isValid = !isTokenExpired(token);
-            logger.debug("✅ JwtService - Token validation result: {}", isValid);
-            return isValid;
-        } catch (Exception e) {
-            logger.error("❌ JwtService - Token validation failed: {}", e.getMessage());
-            return false;
-        }
-    }
+   
 
     public Boolean isTokenValid(String token, User user) {
         logger.debug("🔍 JwtService - Checking token validity for user: {}", user.getEmail());
@@ -125,4 +115,19 @@ public class JwtService {
             return false;
         }
     }
+
+ public Boolean validateToken(String token) {
+        logger.debug("🔍 JwtService - Validating token (length: {})", token.length());
+        try {
+            boolean isValid = !isTokenExpired(token);
+            logger.debug("✅ JwtService - Token validation result: {}", isValid);
+            return isValid;
+        } catch (Exception e) {
+            logger.error("❌ JwtService - Token validation failed: {}", e.getMessage());
+            return false;
+        }
+    }
+
+
+
 } 
