@@ -135,6 +135,14 @@ public class SalesService implements SalesUseCase {
         salesOrderRepository.save(order);
     }
 
+    
+    @Override
+    public boolean checkStockAvailability(UUID variantId, int quantity) {
+        Variant variant = variantRepository.findById(variantId)
+                .orElseThrow(() -> new VariantNotFoundException(variantId));
+        return variant.getQuantity() >= quantity;
+    }
+
     @Override
     public void processSalesOrder(UUID orderId) {
         SalesOrder order = salesOrderRepository.findById(orderId)
@@ -148,10 +156,4 @@ public class SalesService implements SalesUseCase {
         salesOrderRepository.save(order);
     }
 
-    @Override
-    public boolean checkStockAvailability(UUID variantId, int quantity) {
-        Variant variant = variantRepository.findById(variantId)
-                .orElseThrow(() -> new VariantNotFoundException(variantId));
-        return variant.getQuantity() >= quantity;
-    }
 }
