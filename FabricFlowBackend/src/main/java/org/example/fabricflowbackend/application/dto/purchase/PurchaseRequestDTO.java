@@ -32,11 +32,13 @@ public class PurchaseRequestDTO {
         this.orderDate = orderDate;
     }
 
-    public List<PurchaseItemRequestDTO> getItems() {
-        return items;
-    }
+    
 
     public void setItems(List<PurchaseItemRequestDTO> items) {
         this.items = items;
+    }
+
+    public List<PurchaseItemRequestDTO> getItems() {
+        return items;
     }
 }
